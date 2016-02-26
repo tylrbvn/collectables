@@ -72,12 +72,30 @@ def new():
 
 @auth.requires_login()
 def search():
+    object_types = ['',
+                    'Advertising and brand',
+                    'Architectural',
+                    'Art',
+                    'Books, magazines and paper',
+                    'Clothing, fabric and textiles',
+                    'Coins, currency and stamps',
+                    'Film and television',
+                    'Glass and pottery',
+                    'Household items',
+                    'Memorabilia',
+                    'Music',
+                    'Nature and animals',
+                    'Sports',
+                    'Technology',
+                    'Themed',
+                    'Toys and Games']
+
     form = FORM(DIV(LABEL('Name:', _for='name', _class="control-label col-sm-3"),
                 DIV(INPUT(_class = "form-control string", _name='name', _type="text"), _class="col-sm-3"),
                 _class="form-group"),
                 DIV(LABEL('Type:', _for='type', _class="control-label col-sm-3"),
-                DIV(INPUT(_class = "form-control string", _name='type', _type="text"), _class="col-sm-3"),
-                _class="form-group"),
+                            DIV(SELECT(_name='type', *[OPTION(type) for type in object_types],
+                            _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
                 DIV(LABEL('Value:', _for='value', _class="control-label col-sm-3"),
                 DIV(INPUT(_class = "form-control string", _name='value', _type="double"), _class="col-sm-3"),
                 _class="form-group"),
