@@ -71,6 +71,77 @@ def new():
     return dict(form = form)
 
 @auth.requires_login()
+def search():
+    form = FORM(DIV(LABEL('Name:', _for='name', _class="control-label col-sm-3"),
+                DIV(INPUT(_class = "form-control string", _name='name', _type="text"), _class="col-sm-3"),
+                _class="form-group"),
+                DIV(LABEL('Type:', _for='type', _class="control-label col-sm-3"),
+                DIV(INPUT(_class = "form-control string", _name='type', _type="text"), _class="col-sm-3"),
+                _class="form-group"),
+                DIV(LABEL('Value:', _for='value', _class="control-label col-sm-3"),
+                DIV(INPUT(_class = "form-control string", _name='value', _type="double"), _class="col-sm-3"),
+                _class="form-group"),
+                DIV(LABEL('Owned by:', _for='owner', _class="control-label col-sm-3"),
+                DIV(INPUT(_class = "form-control string", _name='owner', _type="text"), _class="col-sm-3"),
+                _class="form-group"),
+                DIV(DIV(INPUT(_class = "btn btn-primary", _value='Search', _type="submit"),
+                _class="col-sm-9 col-sm-offset-3"),
+                _class="form-group"),
+                _class="form-horizontal")
+
+    if form.accepts(request, session):
+        search_term = ""
+        if (len(request.vars.name) > 0):
+            name_term = "%" + request.vars.name + "%"
+            search_term = (db.objects.name.like(name_term))
+        if (len(request.vars.type) > 0):
+            type_term = "%" + request.vars.type + "%"
+            if (search_term):
+                search_term = search_term & (db.objects.type.like(type_term))
+            else:
+                search_term = (db.objects.type.like(type_term))
+        if (len(request.vars.value) > 0):
+            value_term = "%" + request.vars.value + "%"
+            if (search_term):
+                search_term = search_term & (db.objects.value.like(value_term))
+            else:
+                search_term = (db.objects.value.like(value_term))
+        if (len(request.vars.owner) > 0):
+            #Look up user ID given username
+            user = db.auth_user(username = request.vars.owner)
+            #If user exists with username
+            if (user):
+                owner_term = "%" + str(user.id) + "%"
+                if (search_term):
+                    search_term = search_term & (db.objects.user_id.like(owner_term))
+                else:
+                    search_term = (db.objects.user_id.like(owner_term))
+        #Allow for a blank search to return all objects
+        constraint = (db.objects_in_collections.collection_id == db.collections.id) & ((db.collections.privacy == 'Public') | (db.collections.user_id == auth.user.id)) & (db.objects_in_collections.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)
+        if (search_term):
+            search_term =  search_term & constraint
+        else:
+            search_term = constraint
+        #Get results in alphabetical order by title
+        results = db(search_term).select(orderby=db.objects.name)
+        #Filter out duplicate results caused by objects being in public collections
+        #Not able to get select query do this due to complexity in use of distinct
+        distinct = dict()
+        for result in results:
+            if result.objects.id not in distinct:
+                distinct[result.objects.id] = result.objects_in_collections.id
+        #Output success indicated by number of distinct result(s)
+        output = "Search complete: " + str(len(distinct)) + " result"
+        if(len(distinct) != 1): output += "s"
+        response.flash = output
+    else:
+        if form.errors:
+            response.flash = 'One or more of the entries is incorrect'
+        results = dict()
+        distinct = dict()
+    return dict(form = form, results = results, distinct = distinct)
+
+@auth.requires_login()
 def remove():
     collection = db.collections(request.args(0))
     obj = db.objects(request.args(1))

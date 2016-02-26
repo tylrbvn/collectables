@@ -1,0 +1,32 @@
+<!--
+#########################################################################
+## Page to display search form and the results of that form            ##
+#########################################################################
+-->
+{{extend 'layout.html'}}
+<!--Page title and description-->
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1>Search</h1>
+  </div>
+  <div class="panel-body">
+    Search for objects from your collection and other users' public collections!
+  </div>
+</div>
+<!--Search form-->
+{{=form}}
+<!--If there has been a search-->
+{{if ('results' in globals()):}}
+  {{if (len(results)>0):}}
+    <!--Display results-->
+    <h4>Results:</h4>
+    <div class="row">
+    {{for objects in results:}}
+      <!--Filter out duplicate results caused by objects being in more than one collection-->
+      {{if (objects.objects_in_collections.id in distinct.values()):}}
+        {{include 'sub_views/object_preview.html'}}
+      {{pass}}
+    {{pass}}
+    </div>
+  {{pass}}
+{{pass}}
