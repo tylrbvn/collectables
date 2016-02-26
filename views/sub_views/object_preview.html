@@ -13,7 +13,7 @@
       <p><strong>Owner:</strong> {{=objects.auth_user.username}}</p>
       <p>
         <!--CONTROLS TO VIEW FULL INFO, REMOVE FROM COLLECTION etc.-->
-        {{if (auth.is_logged_in() and (collections.collections.user_id == auth.user.id) | (db(db.objects_in_collections.object_id == objects.objects.id).count() > 1)):}}
+        {{if ('removal' in globals()) and auth.is_logged_in()  and (collections.collections.user_id == auth.user.id):}}
           <!--Give controls to view full info and remove the comic from the box-->
           <div class="btn-group" role="group">
             <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>

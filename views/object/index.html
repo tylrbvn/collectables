@@ -1,0 +1,31 @@
+<!--
+#########################################################################
+## Page to view all the user's objects                                 ##
+#########################################################################
+-->
+{{extend 'layout.html'}}
+<!--Title and description-->
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1>All objects</h1>
+  </div>
+  <div class="panel-body">
+    Here you can see all objects at once, displayed in alphabetical order.
+  </div>
+</div>
+<!--Check that user has objects-->
+{{if ('objects' in globals()):}}
+  <div class="row">
+    <!--Display previews-->
+    {{for objects in objects:}}
+      {{include 'sub_views/object_preview.html'}}
+    {{pass}}
+  </div>
+{{else:}}
+<!--Display prompt to create objects-->
+  <div class="alert alert-danger" role="alert">
+    <strong>You don't have any objects.</strong>
+    <a href="{{=URL('object','new')}}" class="alert-link">Click here</a> to create your first object!
+    {{pass}}
+  </div>
+{{pass}}

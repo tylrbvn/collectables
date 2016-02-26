@@ -1,4 +1,13 @@
 @auth.requires_login()
+def index():
+    #Select all user's objects in alphabetical order by name
+    objects = db((db.objects.user_id == auth.user.id) & (auth.user.id == db.auth_user.id)).select(orderby = db.objects.name)
+    if len(objects)>0:
+        return dict(objects = objects)
+    else:
+        return dict()
+
+@auth.requires_login()
 def add():
     #Retrieve object record using ID
     record = db.objects(request.args(0))
