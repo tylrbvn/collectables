@@ -1,0 +1,12 @@
+<!--
+#########################################################################
+## Page to display update SQLForm for a collection                     ##
+#########################################################################
+-->
+{{extend 'layout.html'}}
+<h1>Edit collection</h1>
+{{if ('form' in globals()):}}
+  {{=form}}
+{{else:}}
+  {{=P("You do not have permission to edit this collection.")}}
+{{pass}}
