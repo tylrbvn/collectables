@@ -14,10 +14,10 @@ response.meta.description = "A collector's favourite tool."
 
 if auth.is_logged_in():
     response.menu = [
-        (T('Your collections'), False, URL('collections', 'index'), []),
-        (T('Search'), False, URL('collections', 'search'), []),
+        (T('Your collections'), False, URL('collection', 'index'), []),
+        (T('Search'), False, URL('default', 'search'), []),
         (T('New'), False, None, [
-            (T('Item'), False, URL('item', 'new')),
+            (T('Object'), False, URL('object', 'new')),
             (T('Collection'), False, URL('collection', 'new'))
             ])
     ]
