@@ -67,9 +67,7 @@ db.define_table('objects',
                 Field('type', requires=IS_IN_SET(object_types, error_message="Please select privacy setting"), default = object_types[0]), #Can only currently be one type
                 #Field('description', requires=IS_NOT_EMPTY(), widget=SQLFORM.widgets.text.widget), (Not in spec specifically, may wish to reinclude)
                 Field('story', widget=SQLFORM.widgets.text.widget), #Optional as not all objects have a story
-                Field('value'), #Optional as not all objects have a known value
-                Field('privacy', #Objects must have privacy too as per spec
-                      requires=IS_IN_SET(['Public', 'Private'], error_message="Please select privacy setting"), default = 'Public'))
+                Field('value')) #Optional as not all objects have a known value
 
 
 # Collections Table: stores details about the Collections
