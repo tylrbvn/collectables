@@ -37,27 +37,47 @@ auth.define_tables(username=True)
 auth.settings.registration_requires_verification = False
 auth.settings.registration_requires_approval = False
 auth.settings.reset_password_requires_verification = True
+auth.settings.actions_disabled = ['retrieve_username', 'request_reset_password']
 
 ## login after registration and redirect to home page
 # auth.settings.login_after_registration = True
 # auth.settings.login_next = URL('default', 'boxes.html')
 
+object_types = ['Advertising and brand',
+                'Architectural',
+                'Art',
+                'Books, magazines and paper',
+                'Clothing, fabric and textiles',
+                'Coins, currency and stamps',
+                'Film and television',
+                'Glass and pottery',
+                'Household items',
+                'Memorabilia',
+                'Music',
+                'Nature and animals',
+                'Sports',
+                'Technology',
+                'Themed',
+                'Toys and Games']
 
 # Objects Table: stores details on each object
 db.define_table('objects',
                 Field('name', requires=IS_NOT_EMPTY()),
-                Field('type', requires=IS_NOT_EMPTY()),
-                Field('description', requires=IS_NOT_EMPTY(), widget=SQLFORM.widgets.text.widget),
-                Field('story', requires=IS_NOT_EMPTY(), widget=SQLFORM.widgets.text.widget),
-                Field('value', requires=IS_NOT_EMPTY()))
+                Field('user_id', db.auth_user, default=auth.user_id),   # adds logged in user by default,
+                Field('type', requires=IS_IN_SET(object_types, error_message="Please select privacy setting"), default = object_types[0]), #Can only currently be one type
+                #Field('description', requires=IS_NOT_EMPTY(), widget=SQLFORM.widgets.text.widget), (Not in spec specifically, may wish to reinclude)
+                Field('story', widget=SQLFORM.widgets.text.widget), #Optional as not all objects have a story
+                Field('value'), #Optional as not all objects have a known value
+                Field('privacy', #Objects must have privacy too as per spec
+                      requires=IS_IN_SET(['Public', 'Private'], error_message="Please select privacy setting"), default = 'Public'))
 
 
 # Collections Table: stores details about the Collections
 db.define_table('collections',
                 Field('name', requires=IS_NOT_EMPTY()),
                 Field('user_id', db.auth_user, default=auth.user_id),   # adds logged in user by default
-                Field('privacy_settings',
-                      requires=IS_IN_SET(['Public', 'Private'], error_message="Please select setting")))
+                Field('privacy',
+                      requires=IS_IN_SET(['Public', 'Private'], error_message="Please select privacy setting"), default = 'Public'))
 
 # Objects in Collections Table: stores relation between objects and the collections they are in
 db.define_table('objects_in_collections',
