@@ -70,6 +70,23 @@ def new():
         response.flash = 'One or more of the entries is incorrect:'
     return dict(form = form)
 
+@auth.requires_login()
+def remove():
+    collection = db.collections(request.args(0))
+    obj = db.objects(request.args(1))
+    if (collection and obj):
+        if ((collection.user_id == auth.user.id) & (obj.user_id == auth.user.id)):
+            #Delete the link
+            db((db.objects_in_collections.object_id == obj.id) & (db.objects_in_collections.collection_id == collection.id)).delete()
+            #This is not currently visible due to immediate redirect
+            response.flash = "'" + obj.name + "' successfully removed from collection '" + collection.name + "'"
+            redirect(URL('collection', 'view', args=[collection.id]))
+        else:
+            response.flash = "You don't have permission to remove this"
+    else:
+        response.flash = "Invalid colleciton or object selected"
+    return dict()
+
 def view():
     collection_id = request.args(0)
     if (session.message):

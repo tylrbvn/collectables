@@ -47,7 +47,7 @@
     <div class="alert alert-danger" role="alert">
       <strong>This collection is empty.</strong>
       {{if auth.is_logged_in() and (collections.collections.user_id == auth.user.id):}}
-      <a href="{{=URL('object','add', args=[collections.collections.id])}}" class="alert-link">Add an object</a>!
+      <a href="{{=URL('collection','add', args=[collections.collections.id])}}" class="alert-link">Add an object</a>!
       {{pass}}
     </div>
     {{pass}}
