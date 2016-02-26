@@ -17,7 +17,7 @@ def edit():
     if(record):
         #Check user owns that collection
         if ((record.user_id == auth.user.id)):
-            form=SQLFORM(db.collections, record)
+            form=SQLFORM(db.collections, record, deletable=True)
             if form.accepts(request,session):
                 response.flash = 'Collection has been successfully updated.'
             elif form.errors:

@@ -1,0 +1,12 @@
+<!--
+#########################################################################
+## Page to display update SQLForm for an object                        ##
+#########################################################################
+-->
+{{extend 'layout.html'}}
+<h1>Edit object</h1>
+{{if ('form' in globals()):}}
+  {{=form}}
+{{else:}}
+  {{=P("You do not have permission to edit this object.")}}
+{{pass}}
