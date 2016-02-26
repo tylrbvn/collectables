@@ -4,9 +4,16 @@
 #########################################################################
 -->
 {{extend 'layout.html'}}
-{{if ('form' and 'object' in globals()):}}
+{{if ('form' and 'object' and 'no_of_collections' in globals()):}}
   <h1>Add '{{=object.name}}' to a collection</h1>
-  {{=form}}
+  {{if (no_of_collections>0):}}
+    {{=form}}
+  {{else:}}
+  <div class="alert alert-danger" role="alert">
+    <strong>There are no collections to add to.</strong>
+    <a href="{{=URL('collection', 'new')}}" class="alert-link">Click here</a> to create your first collection!</a>
+  </div>
+  {{pass}}
 {{else:}}
   {{=H5("You do not have permission to add this object.")}}
 {{pass}}

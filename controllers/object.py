@@ -31,7 +31,7 @@ def add():
                     response.flash = "Error: Selected collection already contains '" + record.name + "'"
             elif form.errors:
                 response.flash = 'One or more of the entries is incorrect:'
-            return dict(form = form, object = record)
+            return dict(form = form, object = record, no_of_collections = len(collections))
     return dict()
 
 @auth.requires_login()
