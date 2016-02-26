@@ -1,0 +1,12 @@
+<!--
+#########################################################################
+## Page to add object to a collection, check object exists etc         ##
+#########################################################################
+-->
+{{extend 'layout.html'}}
+{{if ('form' and 'object' in globals()):}}
+  <h1>Add '{{=object.name}}' to a collection</h1>
+  {{=form}}
+{{else:}}
+  {{=H5("You do not have permission to add this object.")}}
+{{pass}}
