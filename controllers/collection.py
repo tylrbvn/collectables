@@ -46,6 +46,6 @@ def view():
         else:
             colls = db((db.collections.id == collection_id) & (db.collections.privacy == 'Private') & (db.collections.owner_id == db.auth_user.id)).select()
         if len(colls)>0:
-            objects = db((db.objects_in_collections.collection_id == collection_id) & (db.objects_in_collections.object_id == db.objects.id)).select()
+            objects = db((db.objects_in_collections.collection_id == collection_id) & (db.objects_in_collections.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
             return dict(collections = colls, objects = objects)
     return dict()
