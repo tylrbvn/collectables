@@ -1,0 +1,57 @@
+<!--
+#########################################################################
+## Page to display a collection                                        ##
+#########################################################################
+-->
+{{extend 'layout.html'}}
+{{if ('collections' in globals()):}}
+  {{for collections in collections:}}
+    <div class="panel panel-default">
+      <!--Display collection information-->
+      <div class="panel-heading">
+          <h2>{{=collections.collections.name}}
+            <span class="label label-default">
+              {{if (collections.collections.privacy == 'Public'):}}
+                Public
+              {{else:}}
+                Private
+              {{pass}}
+            </span>
+          </h2>
+          <h5>by {{=collections.auth_user.username}}</h5>
+      </div>
+      <!--Display controls to add an object to, edit or delete the collection,
+      if the collection belongs to current user-->
+      {{if auth.is_logged_in() and (collections.collections.user_id == auth.user.id):}}
+      <div class="panel-body">
+        <div class="btn-group" role="group">
+          <a class="btn btn-primary", href={{=URL('collection','add', args=[collections.collections.id])}}>
+          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add object</a>
+          <a class="btn btn-default", href={{=URL('collection','edit', args=[collections.collections.id])}}>
+          <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit collection</a>
+          <a class="btn btn-default", href={{=URL('collection','delete', args=[collections.collections.id])}}>
+          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete collection</a>
+        </div>
+      </div>
+      {{pass}}
+    </div>
+    {{if (len(objects)>0):}}
+      <!--Display previews of collections contents-->
+      <div class="row">
+        {{for objects in objects:}}
+          {{include 'sub_views/object_preview.html'}}
+        {{pass}}
+      </div>
+    {{else:}}
+    <!--Display prompt if collection empty-->
+    <div class="alert alert-danger" role="alert">
+      <strong>This collection is empty.</strong>
+      {{if auth.is_logged_in() and (collections.collections.user_id == auth.user.id):}}
+      <a href="{{=URL('object','add', args=[collections.collections.id])}}" class="alert-link">Add an object</a>!
+      {{pass}}
+    </div>
+    {{pass}}
+  {{pass}}
+{{else:}}
+  {{=H5("There is no collection to display")}}
+{{pass}}

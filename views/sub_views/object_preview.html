@@ -1,0 +1,32 @@
+<!--
+#########################################################################
+## Object preview subview that is used in collection/view              ##
+#########################################################################
+-->
+<div class="col-sm-6 col-md-3">
+  <div class="thumbnail">
+    <a href="{{=URL('object','view', args=[objects.objects.id])}}">
+      <h4 style="text-align:center">{{=objects.objects.name}}</h4>
+    </a>
+    <div class="caption">
+      <p><strong>Type:</strong> {{=objects.objects.type}}</p>
+      <p><strong>Owner:</strong> {{=objects.auth_user.username}}</p>
+      <p>
+        <!--CONTROLS TO VIEW FULL INFO, REMOVE FROM COLLECTION etc.-->
+        {{if (auth.is_logged_in() and (collections.collections.user_id == auth.user.id) | (db(db.objects_in_collections.object_id == objects.objects.id).count() > 1)):}}
+          <!--Give controls to view full info and remove the comic from the box-->
+          <div class="btn-group" role="group">
+            <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
+            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
+            <a class="btn btn-danger btn-sm", role="button", href={{=URL('collection','remove', args=[collections.collections.id, objects.objects.id])}}>
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove from collection</a>
+          </div>
+        {{else:}}
+          <!--Else just give control to view full info-->
+          <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
+          <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
+        {{pass}}
+      </p>
+    </div>
+  </div>
+</div>

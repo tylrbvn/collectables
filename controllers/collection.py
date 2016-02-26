@@ -16,3 +16,18 @@ def new():
     elif form.errors:
         response.flash = 'One or more of the entries is incorrect:'
     return dict(form = form)
+
+def view():
+    collection_id = request.args(0)
+    if (session.message):
+        response.flash = session.message
+        session.message = None
+    if collection_id is not None:
+        if auth.is_logged_in():
+            colls = db((db.collections.id == collection_id) & ((db.collections.privacy == 'Public') | (db.collections.user_id == auth.user.id)) & (db.collections.user_id == db.auth_user.id)).select()
+        else:
+            colls = db((db.collections.id == collection_id) & (db.collections.privacy == 'Private') & (db.collections.owner_id == db.auth_user.id)).select()
+        if len(colls)>0:
+            objects = db((db.objects_in_collections.collection_id == collection_id) & (db.objects_in_collections.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
+            return dict(collections = colls, objects = objects)
+    return dict()
