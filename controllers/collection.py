@@ -178,9 +178,6 @@ def remove():
 
 def view():
     collection_id = request.args(0)
-    if (session.message):
-        response.flash = session.message
-        session.message = None
     if collection_id is not None:
         if auth.is_logged_in():
             colls = db((db.collections.id == collection_id) & ((db.collections.privacy == 'Public') | (db.collections.user_id == auth.user.id)) & (db.collections.user_id == db.auth_user.id)).select()

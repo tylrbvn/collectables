@@ -1,0 +1,74 @@
+<!--
+#########################################################################
+## Page to display current user's have list                            ##
+#########################################################################
+-->
+{{extend 'layout.html'}}
+{{if ('user' in globals()):}}
+  <div class="panel panel-default">
+    <!--Display list information-->
+    <div class="panel-heading">
+        <h2>
+          {{if auth.is_logged_in() and (user.id == auth.user.id):}}
+            Your
+          {{else:}}
+            {{=user.username}}'s
+          {{pass}}
+           Have List
+        </h2>
+    </div>
+    {{if auth.is_logged_in() and (user.id == auth.user.id):}}
+    <!--Display controls to add an object to list,
+    if the list belongs to current user-->
+    <div class="panel-body">
+      <div class="btn-group" role="group">
+        <a class="btn btn-primary", href={{=URL('have','add')}}>
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add object</a>
+      </div>
+    </div>
+    {{pass}}
+  </div>
+  {{if (len(objects)>0):}}
+    <!--Display previews of list contents-->
+    <div class="row">
+      {{for objects in objects:}}
+      <div class="col-sm-6 col-md-3">
+        <div class="thumbnail">
+          <a href="{{=URL('object','view', args=[objects.objects.id])}}">
+            <h4 style="text-align:center">{{=objects.objects.name}}</h4>
+          </a>
+          <div class="caption">
+            <p><strong>Type:</strong> {{=objects.objects.type}}</p>
+            <p>
+              <!--CONTROLS TO VIEW FULL INFO, REMOVE FROM LIST etc.-->
+              {{if ('removal' in globals()) and auth.is_logged_in():}}
+                <!--Give controls to view full info and remove the object from the list-->
+                <div class="btn-group" role="group">
+                  <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
+                  <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
+                  <a class="btn btn-danger btn-sm", role="button", href={{=URL('have','remove', args=[objects.objects.id])}}>
+                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove from list</a>
+                </div>
+              {{else:}}
+                <!--Else just give control to view full info-->
+                <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
+                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
+              {{pass}}
+            </p>
+          </div>
+        </div>
+      </div>
+      {{pass}}
+    </div>
+  {{else:}}
+    <!--Display prompt if collection empty-->
+    <div class="alert alert-danger" role="alert">
+      <strong>This list is empty.</strong>
+      {{if ('removal' in globals()) and auth.is_logged_in():}}
+      <a href="{{=URL('have','add')}}" class="alert-link">Add an object</a>!
+      {{pass}}
+    </div>
+  {{pass}}
+{{else:}}
+  {{=P("Invalid user")}}
+{{pass}}

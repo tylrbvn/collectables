@@ -17,8 +17,8 @@ if auth.is_logged_in():
         (T('Your collections'), False, URL('collection', 'index'), []),
         (T('Your objects'), False, URL('object', 'index'), []),
         (T('Your lists'), False, None, [
-            (T('Have list'), False, URL('have', 'index')),
-            (T('Want list'), False, URL('want', 'index'))
+            (T('Have list'), False, URL('have', 'view', args=[auth.user.id])),
+            (T('Want list'), False, URL('want', 'view', args=[auth.user.id]))
             ]),
         (T('New'), False, None, [
             (T('Object'), False, URL('object', 'new')),
