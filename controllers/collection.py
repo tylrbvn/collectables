@@ -93,9 +93,9 @@ def search():
     form = FORM(DIV(LABEL('Name:', _for='name', _class="control-label col-sm-3"),
                 DIV(INPUT(_class = "form-control string", _name='name', _type="text"), _class="col-sm-3"),
                 _class="form-group"),
-                DIV(LABEL('Type:', _for='type', _class="control-label col-sm-3"),
+                DIV(LABEL('Type(s):', _for='type', _class="control-label col-sm-3"),
                             DIV(SELECT(_name='type', *[OPTION(type) for type in object_types],
-                            _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
+                            _class = "form-control select", _multiple=True), _class="col-sm-4"), _class = "form-group"),
                 DIV(LABEL('Value:', _for='value', _class="control-label col-sm-3"),
                 DIV(INPUT(_class = "form-control string", _name='value', _type="double"), _class="col-sm-3"),
                 _class="form-group"),
@@ -112,12 +112,21 @@ def search():
         if (len(request.vars.name) > 0):
             name_term = "%" + request.vars.name + "%"
             search_term = (db.objects.name.like(name_term))
-        if (len(request.vars.type) > 0):
-            type_term = "%" + request.vars.type + "%"
-            if (search_term):
-                search_term = search_term & (db.objects.type.like(type_term))
+        if (request.vars.type):
+            if (isinstance(request.vars.type, list)):
+                type_query = ""
+                for type in request.vars.type:
+                    if (type != ""):
+                        if (type_query):
+                            type_query = (type_query | db.objects.type.contains(type))
+                        else:
+                            type_query = (db.objects.type.contains(type))
             else:
-                search_term = (db.objects.type.like(type_term))
+                type_query = (db.objects.type.contains(request.vars.type))
+            if (search_term):
+                search_term = search_term & type_query
+            else:
+                search_term = type_query
         if (len(request.vars.value) > 0):
             value_term = "%" + request.vars.value + "%"
             if (search_term):
@@ -152,7 +161,7 @@ def search():
         #Output success indicated by number of distinct result(s)
         output = "Search complete: " + str(len(distinct)) + " result"
         if(len(distinct) != 1): output += "s"
-        response.flash = output
+        response.flash = search_term
     else:
         if form.errors:
             response.flash = 'One or more of the entries is incorrect'

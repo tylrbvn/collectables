@@ -76,7 +76,7 @@ def have():
                 db.commit
                 #TODO: Success message not currently displayed due to immediate redirect
                 response.flash = "'" + record.name + "' successfully added to list"
-                redirect(URL('object', 'view', args=[record.id]))
+                redirect(URL('have', 'view', args=[auth.user.id]))
             else:
                 response.flash = "Object already in list"
         else:
@@ -124,7 +124,7 @@ def want():
             db.commit
             #TODO: Success message not currently displayed due to immediate redirect
             response.flash = "'" + record.name + "' successfully added to list"
-            redirect(URL('object', 'view', args=[record.id]))
+            redirect(URL('want', 'view', args=[auth.user.id]))
         else:
             response.flash = "Object already in list"
     else:
