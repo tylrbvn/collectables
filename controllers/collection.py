@@ -167,7 +167,7 @@ def remove():
         if ((collection.user_id == auth.user.id) & (obj.user_id == auth.user.id)):
             #Delete the link
             db((db.objects_in_collections.object_id == obj.id) & (db.objects_in_collections.collection_id == collection.id)).delete()
-            #This is not currently visible due to immediate redirect
+            #TODO: This is not currently visible due to immediate redirect
             response.flash = "'" + obj.name + "' successfully removed from collection '" + collection.name + "'"
             redirect(URL('collection', 'view', args=[collection.id]))
         else:
