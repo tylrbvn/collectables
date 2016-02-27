@@ -54,8 +54,8 @@
         <!--Display link to add to wish list if object belongs
         to another user???-->
         {{else:}}
-        <a href={{=URL('list', 'add', args=[objects.objects.id])}} class = "btn btn-primary">
-        <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Add to wishlist</a>
+        <a href={{=URL('object', 'want', args=[objects.objects.id])}} class = "btn btn-primary">
+        <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Add to want list</a>
         {{pass}}
       </div>
     {{pass}}

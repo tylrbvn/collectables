@@ -1,6 +1,6 @@
 <!--
 #########################################################################
-## Page to display current user's have list                            ##
+## Page to display current user's want list                            ##
 #########################################################################
 -->
 {{extend 'layout.html'}}
@@ -14,7 +14,7 @@
           {{else:}}
             {{=user.username}}'s
           {{pass}}
-           Have List
+           Want List
         </h2>
     </div>
     {{if auth.is_logged_in() and (user.id == auth.user.id):}}
@@ -22,8 +22,8 @@
     if the list belongs to current user-->
     <div class="panel-body">
       <div class="btn-group" role="group">
-        <a class="btn btn-primary", href={{=URL('have','add')}}>
-        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add object</a>
+        <a class="btn btn-primary", href={{=URL('collection','search')}}>
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search for objects to add</a>
       </div>
     </div>
     {{pass}}
@@ -46,15 +46,13 @@
                 <div class="btn-group" role="group">
                   <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
                   <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
-                  <a class="btn btn-danger btn-sm", role="button", href={{=URL('have','remove', args=[objects.objects.id])}}>
+                  <a class="btn btn-danger btn-sm", role="button", href={{=URL('want','remove', args=[objects.objects.id])}}>
                   <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove from list</a>
                 </div>
               {{else:}}
                 <!--Else just give control to view full info-->
                 <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
                 <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
-                <a href={{=URL('object', 'want', args=[objects.objects.id])}} class = "btn btn-primary btn-sm">
-                <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Add to want list</a>
               {{pass}}
             </p>
           </div>
@@ -67,7 +65,7 @@
     <div class="alert alert-danger" role="alert">
       <strong>This list is empty.</strong>
       {{if ('removal' in globals()) and auth.is_logged_in():}}
-      <a href="{{=URL('have','add')}}" class="alert-link">Add an object</a>!
+      <a href="{{=URL('collection','search')}}" class="alert-link">Search for objects to add</a>!
       {{pass}}
     </div>
   {{pass}}

@@ -8,7 +8,7 @@ def add():
                 DIV(SELECT(_name='objects', *[OPTION(objects[i].name, _value=str(objects[i].id)) for i in range(len(objects))],
                 _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
                 DIV(DIV(INPUT(_class = "btn btn-primary", _value='Add to list', _type="submit"),
-                A('Cancel', _href=URL('have', 'index'), _class = "btn btn-default"),
+                A('Cancel', _href=URL('have', 'view', args=[auth.user.id]), _class = "btn btn-default"),
                 _class="col-sm-9 col-sm-offset-3"),
                 _class="form-group"),
                 _class="form-horizontal")
@@ -34,7 +34,7 @@ def remove():
             db((db.have_lists.object_id == obj.id) & (db.have_lists.user_id == auth.user.id)).delete()
             #TODO: This is not currently visible due to immediate redirect
             response.flash = "'" + obj.name + "' successfully removed from list'"
-            redirect(URL('have', 'index'))
+            redirect(URL('have', 'view', args=[auth.user.id]))
         else:
             response.flash = "You don't have permission to remove this"
     else:
