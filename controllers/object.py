@@ -62,6 +62,30 @@ def edit():
     return dict()
 
 @auth.requires_login()
+def have():
+    #Retrieve object record using ID
+    record = db.objects(request.args(0))
+    #Check if there exists an object with ID
+    if (record):
+        #Check user owns that object
+        if (record.user_id == auth.user.id):
+            #Ensure object not already in list
+            count = db((db.have_lists.object_id == record.id) & (db.have_lists.user_id == auth.user.id)).count()
+            if (count == 0):
+                db.have_lists.insert(object_id = record.id)
+                db.commit
+                #TODO: Success message not currently displayed due to immediate redirect
+                response.flash = "'" + record.name + "' successfully added to list"
+                redirect(URL('object', 'view', args=[record.id]))
+            else:
+                response.flash = "Object already in list"
+        else:
+            response.flash = "You don't have permission to add that"
+    else:
+        response.flash = "Object does not exist"
+    return dict()
+
+@auth.requires_login()
 def new():
     db.objects.user_id.readable = db.objects.user_id.writable = False
     form = SQLFORM(db.objects)

@@ -1,0 +1,52 @@
+<!--
+#########################################################################
+## Page to display current user's want list                            ##
+#########################################################################
+-->
+{{extend 'layout.html'}}
+<div class="panel panel-default">
+  <!--Display list information-->
+  <div class="panel-heading">
+      <h2>Have List</h2>
+  </div>
+  <!--Display controls to add an object to, edit or delete the collection,
+  if the collection belongs to current user-->
+  <div class="panel-body">
+    <div class="btn-group" role="group">
+      <a class="btn btn-primary", href={{=URL('have','add')}}>
+      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add object</a>
+    </div>
+  </div>
+</div>
+{{if (len(objects)>0):}}
+  <!--Display previews of list contents-->
+  <div class="row">
+    {{for objects in objects:}}
+    <div class="col-sm-6 col-md-3">
+      <div class="thumbnail">
+        <a href="{{=URL('object','view', args=[objects.objects.id])}}">
+          <h4 style="text-align:center">{{=objects.objects.name}}</h4>
+        </a>
+        <div class="caption">
+          <p><strong>Type:</strong> {{=objects.objects.type}}</p>
+          <p>
+            <!--CONTROLS TO VIEW FULL INFO, REMOVE FROM LIST etc.-->
+            <div class="btn-group" role="group">
+              <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
+              <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
+              <a class="btn btn-danger btn-sm", role="button", href={{=URL('have','remove', args=[objects.objects.id])}}>
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove from list</a>
+            </div>
+          </p>
+        </div>
+      </div>
+    </div>
+    {{pass}}
+  </div>
+{{else:}}
+<!--Display prompt if collection empty-->
+<div class="alert alert-danger" role="alert">
+  <strong>This list is empty.</strong>
+  <a href="{{=URL('have','add')}}" class="alert-link">Add an object</a>!
+</div>
+{{pass}}

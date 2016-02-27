@@ -1,0 +1,15 @@
+<!--
+#########################################################################
+## Page to add objects to user's have list                             ##
+#########################################################################
+-->
+{{extend 'layout.html'}}
+<h2>Add object to have list</h2>
+{{if (no_of_objects>0):}}
+  {{=form}}
+{{else:}}
+<div class="alert alert-danger" role="alert">
+  <strong>There are no objects to add.</strong>
+  <a href="{{=URL('object', 'new')}}" class="alert-link">Click here</a> to create your first objects!</a>
+</div>
+{{pass}}
