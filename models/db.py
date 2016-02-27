@@ -64,7 +64,7 @@ object_types = ['Advertising and brand',
 db.define_table('objects',
                 Field('name', requires=IS_NOT_EMPTY()),
                 Field('user_id', db.auth_user, default=auth.user_id),   # adds logged in user by default,
-                Field('type', requires=IS_IN_SET(object_types, error_message="Please select an object type"), default = object_types[0]), #Can only currently be one type
+                Field('type', requires=IS_IN_SET(object_types, error_message="Please select an object type", multiple=True), default = object_types[0]), #Can only currently be one type
                 #Field('description', requires=IS_NOT_EMPTY(), widget=SQLFORM.widgets.text.widget), (Not in spec specifically, may wish to reinclude)
                 Field('story', widget=SQLFORM.widgets.text.widget), #Optional as not all objects have a story
                 Field('value', requires=[IS_EMPTY_OR(IS_DECIMAL_IN_RANGE(0,1e100)), #Optional as not all objects have a known value
