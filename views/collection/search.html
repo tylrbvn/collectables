@@ -21,11 +21,13 @@
     <!--Display results-->
     <h4>Results:</h4>
     <div class="row">
+    {{i = 0}}
     {{for objects in results:}}
       <!--Filter out duplicate results caused by objects being in more than one collection-->
-      {{if (objects.objects_in_collections.id in distinct.values()):}}
+      {{if (i in distinct.values()):}}
         {{include 'sub_views/object_preview.html'}}
       {{pass}}
+      {{i = i + 1}}
     {{pass}}
     </div>
   {{pass}}

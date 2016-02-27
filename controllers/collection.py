@@ -135,7 +135,8 @@ def search():
                 else:
                     search_term = (db.objects.user_id.like(owner_term))
         #Allow for a blank search to return all objects
-        constraint = (db.objects_in_collections.collection_id == db.collections.id) & ((db.collections.privacy == 'Public') | (db.collections.user_id == auth.user.id)) & (db.objects_in_collections.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)
+        constraint = (((db.objects_in_collections.collection_id == db.collections.id) & (db.collections.privacy == 'Public') &
+                                (db.objects_in_collections.object_id == db.objects.id)) | (db.objects.user_id == auth.user.id)) & (db.objects.user_id == db.auth_user.id)
         if (search_term):
             search_term =  search_term & constraint
         else:
@@ -145,9 +146,9 @@ def search():
         #Filter out duplicate results caused by objects being in public collections
         #Not able to get select query do this due to complexity in use of distinct
         distinct = dict()
-        for result in results:
-            if result.objects.id not in distinct:
-                distinct[result.objects.id] = result.objects_in_collections.id
+        for i in range(len(results)):
+            if results[i].objects.id not in distinct:
+                distinct[results[i].objects.id] = i
         #Output success indicated by number of distinct result(s)
         output = "Search complete: " + str(len(distinct)) + " result"
         if(len(distinct) != 1): output += "s"
