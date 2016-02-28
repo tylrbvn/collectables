@@ -38,7 +38,16 @@
             <h4 style="text-align:center">{{=objects.objects.name}}</h4>
           </a>
           <div class="caption">
-            <p><strong>Type:</strong> {{=objects.objects.type}}</p>
+            <p><strong>Type:</strong></p>
+            {{if len(objects.objects.type.split('|'))>0:}}
+            <ul>
+              {{for type in objects.objects.type.split('|'):}}
+                {{if len(type)>0:}}
+                  <li>{{=type}}</li>
+                {{pass}}
+              {{pass}}
+            </ul>
+            {{pass}}
             <p>
               <!--CONTROLS TO VIEW FULL INFO, REMOVE FROM LIST etc.-->
               {{if ('removal' in globals()) and auth.is_logged_in():}}

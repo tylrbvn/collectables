@@ -161,7 +161,7 @@ def search():
         #Output success indicated by number of distinct result(s)
         output = "Search complete: " + str(len(distinct)) + " result"
         if(len(distinct) != 1): output += "s"
-        response.flash = search_term
+        response.flash = output
     else:
         if form.errors:
             response.flash = 'One or more of the entries is incorrect'

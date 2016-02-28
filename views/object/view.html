@@ -15,9 +15,16 @@
         <div class="panel-body">
         <!--Object full details-->
           <div style="margin-top: 1em">
-            <p>
-              <strong>Type:</strong> {{=objects.objects.type}}
-            </p>
+            <p><strong>Type:</strong></p>
+            {{if len(objects.objects.type.split('|'))>0:}}
+            <ul>
+              {{for type in objects.objects.type.split('|'):}}
+                {{if len(type)>0:}}
+                  <li>{{=type}}</li>
+                {{pass}}
+              {{pass}}
+            </ul>
+            {{pass}}
             {{if (objects.objects.story):}}
             <p><strong>Story:</strong> {{=objects.objects.story}}</p>
             {{pass}}
