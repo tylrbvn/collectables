@@ -95,3 +95,18 @@ db.define_table('want_lists',
                 Field('user_id', db.auth_user, default=auth.user_id,    # adds logged in user by default
                       writable=False, readable=False),
                 Field('object_id', db.objects))
+
+# Trades Table: stores details about Trades
+db.define_table('trades',
+                Field('UserProposing', db.auth_user), # User proposing trade (really couldn't think of better name)
+                Field('UserProposed', db.auth_user), # User being proposed to
+                Field('accepted', type='boolean'),   # true if trade accepted
+                Field('rejected', type='boolean'))   # true if trade rejected
+
+# Objects in Trade Table: stores relation between objects and the trades they are in
+db.define_table('objects_in_trade',
+                Field('object_id', db.objects),
+                Field('trade_id', db.trades),
+                Field('offered', type='boolean'),   # true if object is being offered by proposer
+                Field('asked', type='boolean'))     # true if object is being asked by proposer
+
