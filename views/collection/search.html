@@ -30,5 +30,11 @@
       {{i = i + 1}}
     {{pass}}
     </div>
+  {{else:}}
+    <!--Display alert that no results have been found-->
+    <div class="alert alert-info alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <strong>No objects found</strong>
+    </div>
   {{pass}}
 {{pass}}
