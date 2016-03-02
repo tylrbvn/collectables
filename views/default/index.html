@@ -16,4 +16,33 @@
 <h2>Welcome to Collectables!</h2>
 <p class="lead">A collector's favourite tool.</p>
 <!--Content-->
-<p>[Homepage will introduce new users to the site and allow experienced users to begin to explore collections]</p>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">About Collectables</h3>
+  </div>
+  <div class="panel-body">
+    Collectables is a place for enthusiasts to organise, expand and show off their beloved collections.
+  </div>
+</div>
+<!--Display 5 largest collections-->
+{{if len(largest)>0:}}
+  <h4>Explore public collections:</h4>
+  <div class="row">
+  {{for collections in largest:}}
+    <a href={{=URL('collection','view', args=[collections.collections.id])}}>
+      <div class="col-sm-6 col-md-4">
+      <div class="thumbnail" style="text-align:center">
+          <div class="caption">
+            <span style="font-size:4em" class="glyphicon glyphicon-file" aria-hidden="true"></span>
+              <h2>{{=collections.collections.name}}</h2>
+              <h5>by {{=collections.auth_user.username}}</h5>
+              <h4><span class="label label-default">{{=str(collections._extra['COUNT(objects_in_collections.collection_id)'])}} objects</span></h4>
+          </div>
+        </div>
+      </div>
+    </a>
+  {{pass}}
+  </div>
+{{else:}}
+  <h4>There are no large public collections to display</h4>
+{{pass}}
