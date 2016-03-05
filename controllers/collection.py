@@ -105,6 +105,8 @@ def search():
                 DIV(DIV(INPUT(_class = "btn btn-primary", _value='Search', _type="submit"),
                 _class="col-sm-9 col-sm-offset-3"),
                 _class="form-group"),
+                DIV(DIV(EM("(All fields are optional)"), _class="col-sm-9 col-sm-offset-3"),
+                _class="form-group"),
                 _class="form-horizontal")
 
     if form.accepts(request, session):
