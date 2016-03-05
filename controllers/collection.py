@@ -162,12 +162,13 @@ def search():
         output = "Search complete: " + str(len(distinct)) + " result"
         if(len(distinct) != 1): output += "s"
         response.flash = output
+        return dict(form = form, results = results, distinct = distinct)
     else:
         if form.errors:
             response.flash = 'One or more of the entries is incorrect'
         results = dict()
         distinct = dict()
-    return dict(form = form, results = results, distinct = distinct)
+    return dict(form = form)
 
 @auth.requires_login()
 def remove():
