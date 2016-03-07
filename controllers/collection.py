@@ -91,24 +91,32 @@ def search():
                     'Toys and Games']
 
     form = FORM(DIV(LABEL('Name:', _for='name', _class="control-label col-sm-3"),
-                DIV(INPUT(_class = "form-control string", _name='name', _type="text"), _class="col-sm-3"),
-                _class="form-group"),
+                    DIV(INPUT(_class = "form-control string", _name='name', _type="text"), _class="col-sm-3"),
+                    _class="form-group"),
                 DIV(LABEL('Type(s):', _for='type', _class="control-label col-sm-3"),
-                            DIV(SELECT(_name='type', *[OPTION(type) for type in object_types],
-                            _class = "form-control select", _multiple=True), _class="col-sm-4"), _class = "form-group"),
-                DIV(LABEL('Value:', _for='value', _class="control-label col-sm-3"),
-                DIV(INPUT(_class = "form-control string", _name='value', _type="double"), _class="col-sm-3"),
-                _class="form-group"),
+                    DIV(SELECT(_name='type', *[OPTION(type) for type in object_types],
+                    _class = "form-control select", _multiple=True), _class="col-sm-4"), _class = "form-group"),
+                DIV(DIV(LABEL('Value:', _for='value', _class="control-label col-sm-3"),
+                    DIV(DIV(DIV('£', _class="input-group-addon"),
+                            INPUT(_class = "form-control string", _name='min_value', _type="double"),
+                            DIV('min', _class="input-group-addon"),
+                        _class="input-group"), _class="col-sm-3"),
+                    DIV(DIV(DIV('£', _class="input-group-addon"),
+                            INPUT(_class = "form-control string", _name='max_value', _type="double"),
+                            DIV('max', _class="input-group-addon"),
+                        _class="input-group"), _class="col-sm-3"),
+                    _class="form-inline"), _class="form-group"),
                 DIV(LABEL('Owned by:', _for='owner', _class="control-label col-sm-3"),
-                DIV(INPUT(_class = "form-control string", _name='owner', _type="text"), _class="col-sm-3"),
-                _class="form-group"),
+                    DIV(INPUT(_class = "form-control string", _name='owner', _type="text"), _class="col-sm-3"),
+                    _class="form-group"),
                 DIV(DIV(INPUT(_class = "btn btn-primary", _value='Search', _type="submit"),
-                _class="col-sm-9 col-sm-offset-3"),
-                _class="form-group"),
+                    _class="col-sm-9 col-sm-offset-3"),
+                    _class="form-group"),
                 DIV(DIV(EM("(All fields are optional)"), _class="col-sm-9 col-sm-offset-3"),
-                _class="form-group"),
+                    _class="form-group"),
                 _class="form-horizontal")
 
+    #TODO: Refactor this section
     if form.accepts(request, session):
         search_term = ""
         if (len(request.vars.name) > 0):
@@ -129,12 +137,27 @@ def search():
                 search_term = search_term & type_query
             else:
                 search_term = type_query
-        if (len(request.vars.value) > 0):
-            value_term = "%" + request.vars.value + "%"
+        #If both min and max value specified
+        if (len(request.vars.min_value) > 0) and (len(request.vars.max_value) > 0):
+            value_term = (db.objects.value >= request.vars.min_value) & (db.objects.value <= request.vars.max_value)
             if (search_term):
-                search_term = search_term & (db.objects.value.like(value_term))
+                search_term = search_term & value_term
             else:
-                search_term = (db.objects.value.like(value_term))
+                search_term = value_term
+        elif (len(request.vars.min_value) > 0):
+            #If only min value
+            value_term = (db.objects.value >= request.vars.min_value)
+            if (search_term):
+                search_term = search_term & value_term
+            else:
+                search_term = value_term
+        elif (len(request.vars.max_value) > 0):
+            #If only max value
+            value_term = (db.objects.value <= request.vars.max_value)
+            if (search_term):
+                search_term = search_term & value_term
+            else:
+                search_term = value_term
         if (len(request.vars.owner) > 0):
             #Look up user ID given username
             user = db.auth_user(username = request.vars.owner)
