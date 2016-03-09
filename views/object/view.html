@@ -5,68 +5,68 @@
 -->
 {{extend 'layout.html'}}
 <!--Display object-->
-{{if ('objects' in globals()):}}
-    {{for objects in objects:}}
-      <!--Object name-->
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3>{{=objects.objects.name}}</h3>
-        </div>
-        <div class="panel-body">
-        <!--Object full details-->
-          <div style="margin-top: 1em">
-            <p><strong>Type:</strong></p>
-            {{if len(objects.objects.type.split('|'))>0:}}
-            <ul>
-              {{for type in objects.objects.type.split('|'):}}
-                {{if len(type)>0:}}
-                  <li>{{=type}}</li>
-                {{pass}}
-              {{pass}}
-            </ul>
-            {{pass}}
-            {{if (objects.objects.story):}}
-            <p><strong>Story:</strong> {{=objects.objects.story}}</p>
-            {{pass}}
-            {{if (objects.objects.value):}}
-            <p><strong>Value:</strong> {{=objects.objects.value}}</p>
-            {{pass}}
-            <p><strong>Owner:</strong> {{=objects.auth_user.username}}</p>
-          </div>
-        </div>
-      {{pass}}
-
-      <!--Display links to add to a collection, edit or delete the object,
-      if object belongs to user-->
-      {{if auth.is_logged_in():}}
-      <div class="panel-footer">
-        {{if (objects.objects.user_id == auth.user.id):}}
-        <div class="btn-group" role="group">
-          <a href={{=URL('object','add', args=[objects.objects.id])}} class = "btn btn-primary">
-          <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add to a collection</a>
-          <a href={{=URL('object','edit', args=[objects.objects.id])}} class = "btn btn-default">
-          <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit object</a>
-          <!--<a href={{=URL('object','delete', args=[objects.objects.id])}} class = "btn btn-default">
-          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete object</a>-->
-        </div>
-        <div class="btn-group">
-          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Add to list <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu">
-            <li><a href={{=URL('object','have', args=[objects.objects.id])}}>Have list</a></li>
-            <li><a href={{=URL('object','want', args=[objects.objects.id])}}>Want list</a></li>
-          </ul>
-        </div>
-        <!--Display link to add to wish list if object belongs
-        to another user???-->
-        {{else:}}
-        <a href={{=URL('object', 'want', args=[objects.objects.id])}} class = "btn btn-primary">
-        <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Add to want list</a>
-        {{pass}}
+{{if ('object' in globals()):}}
+    <!--Object name-->
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3>{{=object.name}}</h3>
       </div>
-    {{pass}}
+      <div class="panel-body">
+      <!--Object full details-->
+        <div style="margin-top: 1em">
+          <p><strong>Type:</strong></p>
+          {{if len(object.type.split('|'))>0:}}
+          <ul>
+            {{for type in object.type.split('|'):}}
+              {{if len(type)>0:}}
+                <li>{{=type}}</li>
+              {{pass}}
+            {{pass}}
+          </ul>
+          {{pass}}
+          {{if (object.story):}}
+          <p><strong>Story:</strong> {{=object.story}}</p>
+          {{pass}}
+          {{if (object.value):}}
+          <p><strong>Value:</strong> {{=object.value}}</p>
+          {{pass}}
+          {{if ('owner' in globals()):}}
+          <p><strong>Owner:</strong> {{=owner.username}}</p>
+          {{pass}}
+        </div>
+      </div>
+
+    <!--Display links to add to a collection, edit or delete the object,
+    if object belongs to user-->
+    {{if auth.is_logged_in():}}
+    <div class="panel-footer">
+      {{if (object.user_id == auth.user.id):}}
+      <div class="btn-group" role="group">
+        <a href={{=URL('object','add', args=[object.id])}} class = "btn btn-primary">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add to a collection</a>
+        <a href={{=URL('object','edit', args=[object.id])}} class = "btn btn-default">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit object</a>
+        <!--<a href={{=URL('object','delete', args=[object.id])}} class = "btn btn-default">
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete object</a>-->
+      </div>
+      <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Add to list <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li><a href={{=URL('object','have', args=[object.id])}}>Have list</a></li>
+          <li><a href={{=URL('object','want', args=[object.id])}}>Want list</a></li>
+        </ul>
+      </div>
+      <!--Display link to add to wish list if object belongs
+      to another user???-->
+      {{else:}}
+      <a href={{=URL('object', 'want', args=[object.id])}} class = "btn btn-primary">
+      <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Add to want list</a>
+      {{pass}}
+    </div>
 </div>
+{{pass}}
 {{else:}}
   {{=H5("You do not have permission to view this object")}}
 {{pass}}

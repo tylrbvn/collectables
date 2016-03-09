@@ -96,18 +96,21 @@ def new():
     return dict(form = form)
 
 def view():
-    object_id = request.args(0)
-    if object_id is not None:
-        #If own object
-        if auth.is_logged_in():
-            objects = db((db.objects.id == object_id) & (db.objects.user_id == auth.user.id) & (db.objects.user_id == db.auth_user.id)).select()
-            if len(objects)>0:
-                return dict(objects = objects)
-        #If an object from another user's public collection
-        public = db((db.objects_in_collections.object_id == object_id) & (db.objects_in_collections.collection_id == db.collections.id) & (db.collections.privacy == 'Public')).select()
-        if len(public)>0:
-            objects = db((db.objects.id == object_id) & (db.objects.user_id == db.auth_user.id)).select()
-            return dict(objects = objects)
+    object = db.objects(request.args(0))
+    if (object):
+        owner = db.auth_user(object.user_id)
+        if (owner):
+            #If own object
+            if auth.is_logged_in():
+                if (object.user_id == auth.user.id):
+                    return dict(object = object, owner = owner)
+            #If an object from another user's public collection
+            public = db((db.objects_in_collections.object_id == object.id) & (db.objects_in_collections.collection_id == db.collections.id) & (db.collections.privacy == 'Public')).select()
+            if len(public)>0:
+                return dict(object = object, owner = owner)
+        else:
+            #It is a custom object which are public by default
+            return dict(object = object)
     return dict()
 
 @auth.requires_login()
