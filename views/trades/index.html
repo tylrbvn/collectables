@@ -23,7 +23,7 @@
         {{for activeTrades in activeTrades:}}
             <div class="col-sm-6 col-md-3">
               <div class="thumbnail">
-                <a href="{{=URL('trade','view', args=[activeTrades.trades.id])}}">
+                <a href="{{=URL('trades','view', args=[activeTrades.trades.id])}}">
                   {{proposed=(db(activeTrades.trades.UserProposed == db.auth_user.id).select())}}
                   <h4 style="text-align:center">Between {{=proposed[0].username}}
                       on {{=activeTrades.trades.date}}</h4>
