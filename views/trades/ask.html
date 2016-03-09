@@ -5,13 +5,12 @@
 -->
 {{extend 'layout.html'}}
 {{if ('form' and 'no_of_objects' in globals()):}}
-  <h2>Offer object in trade</h2>
+  <h2>Request object in trade</h2>
   {{if (no_of_objects>0):}}
     {{=form}}
   {{else:}}
   <div class="alert alert-danger" role="alert">
-    <strong>There are no objects to add.</strong>
-    <a href="{{=URL('have', 'add')}}" class="alert-link">Click here</a> to create your add objects to your have list!</a>
+    <strong>The user has no objects in their have list.</strong>
   </div>
   {{pass}}
 {{else:}}
