@@ -60,11 +60,16 @@ object_types = ['Advertising and brand',
                 'Themed',
                 'Toys and Games']
 
+status = ['active',
+          'accepted',
+          'rejected',
+          'amended']
+
 # Objects Table: stores details on each object
 db.define_table('objects',
                 Field('name', requires=IS_NOT_EMPTY()),
                 Field('user_id', db.auth_user, default=auth.user_id),   # adds logged in user by default,
-                Field('type', requires=IS_IN_SET(object_types, error_message="Please select an object type", multiple=True), default = object_types[0]), #Can only currently be one type
+                Field('type', requires=IS_IN_SET(object_types, error_message="Please select an object type", multiple=True), default = object_types[0]),
                 #Field('description', requires=IS_NOT_EMPTY(), widget=SQLFORM.widgets.text.widget), (Not in spec specifically, may wish to reinclude)
                 Field('story', widget=SQLFORM.widgets.text.widget), #Optional as not all objects have a story
                 Field('value', requires=[IS_EMPTY_OR(IS_DECIMAL_IN_RANGE(0,1e100)), #Optional as not all objects have a known value
@@ -102,8 +107,7 @@ db.define_table('trades',
                 Field('UserProposing', db.auth_user), # User proposing trade (really couldn't think of better name)
                 Field('UserProposed', db.auth_user), # User being proposed to
                 Field('date', default=datetime.date.today()),   # adds current date by default
-                Field('accepted', type='boolean', default=False),   # true if trade accepted
-                Field('rejected', type='boolean', default=False))   # true if trade rejected
+                Field('status', requires=IS_IN_SET(status), default = status[0]))
 
 # Objects in Trade Table: stores relation between objects and the trades they are in
 db.define_table('objects_in_trade',

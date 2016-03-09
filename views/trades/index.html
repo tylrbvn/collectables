@@ -25,7 +25,7 @@
               <div class="thumbnail">
                 <a href="{{=URL('trade','view', args=[activeTrades.trades.id])}}">
                   {{proposed=(db(activeTrades.trades.UserProposed == db.auth_user.id).select())}}
-                  <h4 style="text-align:center">Trade between {{=proposed[0].username}}
+                  <h4 style="text-align:center">Between {{=proposed[0].username}}
                       on {{=activeTrades.trades.date}}</h4>
                 </a>
               </div>
@@ -46,7 +46,7 @@
               <div class="thumbnail">
                 <a href="{{=URL('trade','view', args=[acceptedTrades.trades.id])}}">
                   {{proposed=(db(acceptedTrades.trades.UserProposed == db.auth_user.id).select())}}
-                  <h4 style="text-align:center">Trade between {{=proposed[0].username}}
+                  <h4 style="text-align:center">Between {{=proposed[0].username}}
                       on {{=acceptedTrades.trades.date}}</h4>
                 </a>
               </div>
@@ -67,7 +67,7 @@
               <div class="thumbnail">
                 <a href="{{=URL('trade','view', args=[rejectedTrades.trades.id])}}">
                   {{proposed=(db(rejectedTrades.trades.UserProposed == db.auth_user.id).select())}}
-                  <h4 style="text-align:center">Trade between {{=proposed[0].username}}
+                  <h4 style="text-align:center">Between {{=proposed[0].username}}
                       on {{=rejectedTrades.trades.date}}</h4>
                 </a>
               </div>
