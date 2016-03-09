@@ -22,7 +22,8 @@ if auth.is_logged_in():
             ]),
         (T('New'), False, None, [
             (T('Object'), False, URL('object', 'new')),
-            (T('Collection'), False, URL('collection', 'new'))
+            (T('Collection'), False, URL('collection', 'new')),
+            (T('Trade'), False, URL('trades', 'new'))
             ]),
         (T('Trades'), False, URL('trades', 'index'), []),
         (T('Search'), False, URL('collection', 'search'), [])
