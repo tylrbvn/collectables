@@ -1,10 +1,10 @@
 @auth.requires_login()
 def index():
-    activeTrades = db((db.trades.UserProposing == auth.user.id) & (auth.user.id == db.auth_user.id) & \
+    activeTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
                       (db.trades.status == 'active')).select()
-    acceptedTrades = db((db.trades.UserProposing == auth.user.id) & (auth.user.id == db.auth_user.id) & \
+    acceptedTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
                       (db.trades.status == 'accepted')).select()
-    rejectedTrades = db((db.trades.UserProposing == auth.user.id) & (auth.user.id == db.auth_user.id) & \
+    rejectedTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
                       (db.trades.status == 'rejected')).select()
     return dict(activeTrades = activeTrades, acceptedTrades = acceptedTrades, rejectedTrades = rejectedTrades)
 
