@@ -8,6 +8,9 @@ def index():
                       (db.trades.status == 'rejected')).select()
     return dict(activeTrades = activeTrades, acceptedTrades = acceptedTrades, rejectedTrades = rejectedTrades)
 
+@auth.requires_login()
+def view():
+    return dict()
 
 @auth.requires_login()
 def new():
