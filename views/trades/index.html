@@ -13,6 +13,28 @@
     Here are your trades [Have trades made, trades currently being done, notifications of users offering trades?]
 
       We'll want to have a way to look into other users Have lists
+
   </div>
 </div>
+<!--Check that user has trades-->
+{{if ('trades' in globals()):}}
+  <div class="row">
+    {{for trades in trades:}}
+        <div class="col-sm-6 col-md-3">
+          <div class="thumbnail">
+            <a href="{{=URL('trade','view', args=[trades.trades.id])}}">
+              {{proposed=(db(trades.trades.UserProposed == db.auth_user.id).select())}}
+              <h4 style="text-align:center">Trade between {{=proposed[0].username}}
+                  on {{=trades.trades.date}}</h4>
+            </a>
+          </div>
+        </div>
+    {{pass}}
+  </div>
+{{else:}}
+  <div class="alert alert-danger" role="alert">
+    <strong>You don't have any trades.</strong>
+    {{pass}}
+  </div>
+{{pass}}
 

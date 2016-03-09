@@ -96,10 +96,12 @@ db.define_table('want_lists',
                       writable=False, readable=False),
                 Field('object_id', db.objects))
 
+import datetime
 # Trades Table: stores details about Trades
 db.define_table('trades',
                 Field('UserProposing', db.auth_user), # User proposing trade (really couldn't think of better name)
                 Field('UserProposed', db.auth_user), # User being proposed to
+                Field('date', default=datetime.date.today()),   # adds current date by default
                 Field('accepted', type='boolean'),   # true if trade accepted
                 Field('rejected', type='boolean'))   # true if trade rejected
 
@@ -107,6 +109,6 @@ db.define_table('trades',
 db.define_table('objects_in_trade',
                 Field('object_id', db.objects),
                 Field('trade_id', db.trades),
-                Field('offered', type='boolean'),   # true if object is being offered by proposer
-                Field('asked', type='boolean'))     # true if object is being asked by proposer
+                Field('offered', type='boolean', default=False),   # true if object is being offered by proposer
+                Field('asked', type='boolean', default=False))     # true if object is being asked by proposer
 
