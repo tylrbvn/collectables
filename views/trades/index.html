@@ -17,24 +17,66 @@
   </div>
 </div>
 <!--Check that user has trades-->
-{{if ('trades' in globals()):}}
+  <h4>Active Trades:</h4>
   <div class="row">
-    {{for trades in trades:}}
-        <div class="col-sm-6 col-md-3">
-          <div class="thumbnail">
-            <a href="{{=URL('trade','view', args=[trades.trades.id])}}">
-              {{proposed=(db(trades.trades.UserProposed == db.auth_user.id).select())}}
-              <h4 style="text-align:center">Trade between {{=proposed[0].username}}
-                  on {{=trades.trades.date}}</h4>
-            </a>
-          </div>
-        </div>
+    {{if len(activeTrades)>0:}}
+        {{for activeTrades in activeTrades:}}
+            <div class="col-sm-6 col-md-3">
+              <div class="thumbnail">
+                <a href="{{=URL('trade','view', args=[activeTrades.trades.id])}}">
+                  {{proposed=(db(activeTrades.trades.UserProposed == db.auth_user.id).select())}}
+                  <h4 style="text-align:center">Trade between {{=proposed[0].username}}
+                      on {{=activeTrades.trades.date}}</h4>
+                </a>
+              </div>
+            </div>
+        {{pass}}
+    {{else:}}
+      <div class="alert alert-info" role="alert">
+        <strong>You don't have any trades.</strong>
+      </div>
     {{pass}}
   </div>
-{{else:}}
-  <div class="alert alert-danger" role="alert">
-    <strong>You don't have any trades.</strong>
+
+  <h4>Accepted Trades:</h4>
+  <div class="row">
+    {{if len(acceptedTrades)>0:}}
+        {{for acceptedTrades in acceptedTrades:}}
+            <div class="col-sm-6 col-md-3">
+              <div class="thumbnail">
+                <a href="{{=URL('trade','view', args=[acceptedTrades.trades.id])}}">
+                  {{proposed=(db(acceptedTrades.trades.UserProposed == db.auth_user.id).select())}}
+                  <h4 style="text-align:center">Trade between {{=proposed[0].username}}
+                      on {{=acceptedTrades.trades.date}}</h4>
+                </a>
+              </div>
+            </div>
+        {{pass}}
+    {{else:}}
+      <div class="alert alert-info" role="alert">
+        <strong>You don't have any accepted trades.</strong>
+      </div>
     {{pass}}
   </div>
-{{pass}}
+
+  <h4> Rejected Trades:</h4>
+  <div class="row">
+    {{if len(rejectedTrades)>0:}}
+        {{for rejectedTrades in rejectedTrades:}}
+            <div class="col-sm-6 col-md-3">
+              <div class="thumbnail">
+                <a href="{{=URL('trade','view', args=[rejectedTrades.trades.id])}}">
+                  {{proposed=(db(rejectedTrades.trades.UserProposed == db.auth_user.id).select())}}
+                  <h4 style="text-align:center">Trade between {{=proposed[0].username}}
+                      on {{=rejectedTrades.trades.date}}</h4>
+                </a>
+              </div>
+            </div>
+        {{pass}}
+    {{else:}}
+      <div class="alert alert-info" role="alert">
+        <strong>You don't have any rejected trades (yay).</strong>
+      </div>
+    {{pass}}
+  </div>
 
