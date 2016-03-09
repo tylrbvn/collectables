@@ -1,0 +1,19 @@
+<!--
+#########################################################################
+## Page to add object to a collection                                  ##
+#########################################################################
+-->
+{{extend 'layout.html'}}
+{{if ('form' and 'no_of_objects' in globals()):}}
+  <h2>Offer object in trade</h2>
+  {{if (no_of_objects>0):}}
+    {{=form}}
+  {{else:}}
+  <div class="alert alert-danger" role="alert">
+    <strong>There are no objects to add.</strong>
+    <a href="{{=URL('object', 'new')}}" class="alert-link">Click here</a> to create your first objects!</a>
+  </div>
+  {{pass}}
+{{else:}}
+  {{=H5("You do not have permission to add to this object.")}}
+{{pass}}
