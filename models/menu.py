@@ -20,12 +20,12 @@ if auth.is_logged_in():
             (T('Have list'), False, URL('have', 'view', args=[auth.user.id])),
             (T('Want list'), False, URL('want', 'view', args=[auth.user.id]))
             ]),
+        (T('Your Trades'), False, URL('trades', 'index'), []),
         (T('New'), False, None, [
             (T('Object'), False, URL('object', 'new')),
             (T('Collection'), False, URL('collection', 'new')),
             (T('Trade'), False, URL('trades', 'new'))
             ]),
-        (T('Trades'), False, URL('trades', 'index'), []),
         (T('Search'), False, URL('collection', 'search'), [])
     ]
 

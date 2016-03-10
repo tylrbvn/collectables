@@ -33,8 +33,8 @@ def offer():
             form = FORM(DIV(LABEL('Select object to offer:', _for='objects', _class="control-label col-sm-3"),
                         DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
                         _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
-                        DIV(DIV(INPUT(_class = "btn btn-primary", _value='Add to offer', _type="submit"),
-                        A('Cancel', _href=URL('trades', 'view', args=trade.id), _class = "btn btn-default"),
+                        DIV(DIV(INPUT(_class = "btn btn-default", _value='Add to offer', _type="submit"),
+                        A('Next step', _href=URL('trades', 'ask', args=trade.id), _class = "btn btn-primary"),
                         _class="col-sm-9 col-sm-offset-3"),
                         _class="form-group"),
                         _class="form-horizontal")
@@ -68,8 +68,8 @@ def ask():
             form = FORM(DIV(LABEL('Select object to request:', _for='objects', _class="control-label col-sm-3"),
                         DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
                         _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
-                        DIV(DIV(INPUT(_class = "btn btn-primary", _value='Add to request', _type="submit"),
-                        A('Cancel', _href=URL('trades', 'view', args=trade.id), _class = "btn btn-default"),
+                        DIV(DIV(INPUT(_class = "btn btn-default", _value='Add to request', _type="submit"),
+                        A('Initiate trade', _href=URL('trades', 'view', args=trade.id), _class = "btn btn-primary"),
                         _class="col-sm-9 col-sm-offset-3"),
                         _class="form-group"),
                         _class="form-horizontal")
@@ -102,10 +102,11 @@ def new():
                     DIV(SELECT(_name='user', *[OPTION(users[i].username, _value=str(users[i].id)) for i in range(len(users))],
                         _class = "form-control select"), _class="col-sm-4"),
                         _class = "form-group"),
-                DIV(DIV(INPUT(_class = "btn btn-primary", _value='Start trade', _type="submit"),
+                DIV(DIV(INPUT(_class = "btn btn-primary", _value='Next step', _type="submit"),
+                A('Cancel', _href=URL('default', 'index'), _class = "btn btn-danger"),
                 _class="col-sm-9 col-sm-offset-3"),
                 _class="form-group"),
-                _class="form-horizontal"
+                _class="form-horizontal")
                 #TODO: Either use or remove this
                 #DIV(LABEL('Objects to offer:', _for='offer', _class="control-label col-sm-3"),
                 #    DIV(SELECT(_name='offer', *[OPTION(my_objects[i].objects.name, _value=str(my_objects[i].objects.id)) for i in range(len(my_objects))],
@@ -117,7 +118,6 @@ def new():
                 #               for i in range(len(db((db.have_lists.user_id == request.vars.user) & (db.have_lists.object_id == db.objects.id)).select()))],
                 #        _class = "form-control select"), _class="col-sm-4"),
                 #        _class = "form-group")
-                )
     #Insert todays date of creation
     if form.accepts(request, session):
         #Ensure object not already in collection
