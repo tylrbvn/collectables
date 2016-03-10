@@ -2,3 +2,7 @@
 height: 60px;
 overflow: auto;
 }
+
+.thumbnail{
+  min-width: 285px;
+}
