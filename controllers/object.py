@@ -74,15 +74,15 @@ def have():
             if (count == 0):
                 db.have_lists.insert(object_id = record.id)
                 db.commit
-                #TODO: Success message not currently displayed due to immediate redirect
-                response.flash = "'" + record.name + "' successfully added to list"
-                redirect(URL('have', 'view', args=[auth.user.id]))
+                session.flash = "'" + record.name + "' successfully added to have list"
+                redirect(URL('object', 'view', args=[record.id]))
             else:
-                response.flash = "Object already in list"
+                session.flash = "Object already in have list"
         else:
-            response.flash = "You don't have permission to add that"
+            session.flash = "You don't have permission to add that"
     else:
-        response.flash = "Object does not exist"
+        session.flash = "Object does not exist"
+    redirect(URL('have','view', args=[auth.user.id]))
     return dict()
 
 @auth.requires_login()
@@ -125,11 +125,11 @@ def want():
         if (count == 0):
             db.want_lists.insert(object_id = record.id)
             db.commit
-            #TODO: Success message not currently displayed due to immediate redirect
-            response.flash = "'" + record.name + "' successfully added to list"
-            redirect(URL('want', 'view', args=[auth.user.id]))
+            session.flash = "'" + record.name + "' successfully added to want list"
+            redirect(URL('object', 'view', args=[record.id]))
         else:
-            response.flash = "Object already in list"
+            session.flash = "Object already in want list"
     else:
-        response.flash = "Object does not exist"
+        session.flash = "Object does not exist"
+    redirect(URL('want','view', args=[auth.user.id]))
     return dict()

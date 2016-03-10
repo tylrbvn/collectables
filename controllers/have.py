@@ -18,7 +18,7 @@ def add():
         if (count == 0):
             db.have_lists.insert(object_id = request.vars.objects)
             db.commit
-            response.flash = "Object successfully added to list!"
+            response.flash = "Object successfully added to have list!"
         else:
             response.flash = "Error: List already contains the selected object!"
     elif form.errors:
@@ -32,13 +32,12 @@ def remove():
         if (obj.user_id == auth.user.id):
             #Delete the record
             db((db.have_lists.object_id == obj.id) & (db.have_lists.user_id == auth.user.id)).delete()
-            #TODO: This is not currently visible due to immediate redirect
-            response.flash = "'" + obj.name + "' successfully removed from list'"
-            redirect(URL('have', 'view', args=[auth.user.id]))
+            session.flash = "'" + obj.name + "' successfully removed from have list'"
         else:
-            response.flash = "You don't have permission to remove this"
+            session.flash = "Error: You don't have permission to remove this"
     else:
-        response.flash = "Invalid object selected"
+        session.flash = "Error: Invalid object selected"
+    redirect(URL('have', 'view', args=[auth.user.id]))
     return dict()
 
 def view():

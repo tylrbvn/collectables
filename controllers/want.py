@@ -7,9 +7,10 @@ def custom():
         db.want_lists.insert(object_id = form.vars.id,
         user_id = auth.user.id)
         db.commit
-        response.flash = "New custom object '" + request.vars.name + "' successfully added to want list"
+        session.flash = "New custom object '" + request.vars.name + "' successfully added to want list"
+        redirect(URL('want', 'view', args=[auth.user.id]))
     elif form.errors:
-        response.flash = 'One or more of the entries is incorrect:'
+        response.flash = "Error: One or more of the entries is incorrect:"
     return dict(form = form)
 
 @auth.requires_login()
@@ -22,13 +23,19 @@ def remove():
             #If only in this want list, delete the custom objects
             if count == 1:
                 db(db.objects.id == obj.id).delete()
+                session.flash = "'" + obj.name + "' successfully removed from list'"
         else:
-            #Delete the record
-            db((db.want_lists.object_id == obj.id) & (db.want_lists.user_id == auth.user.id)).delete()
-        session.flash = "'" + obj.name + "' successfully removed from list'"
-        redirect(URL('want', 'view', args=[auth.user.id]))
+            #Check if item was in want List
+            count = db((db.want_lists.object_id == obj.id) & (db.want_lists.user_id == auth.user.id)).count()
+            if count == 1:
+                #Delete the record
+                db((db.want_lists.object_id == obj.id) & (db.want_lists.user_id == auth.user.id)).delete()
+                session.flash = "'" + obj.name + "' successfully removed from list'"
+            else:
+                session.flash = "Error: Item not in want list"
     else:
-        response.flash = "Invalid object selected"
+        session.flash = "Error: Invalid object selected"
+    redirect(URL('want', 'view', args=[auth.user.id]))
     return dict()
 
 def view():

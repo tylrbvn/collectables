@@ -206,13 +206,14 @@ def remove():
         if ((collection.user_id == auth.user.id) & (obj.user_id == auth.user.id)):
             #Delete the link
             db((db.objects_in_collections.object_id == obj.id) & (db.objects_in_collections.collection_id == collection.id)).delete()
-            #TODO: This is not currently visible due to immediate redirect
-            response.flash = "'" + obj.name + "' successfully removed from collection '" + collection.name + "'"
+            session.flash = "'" + obj.name + "' successfully removed from collection '" + collection.name + "'"
             redirect(URL('collection', 'view', args=[collection.id]))
         else:
-            response.flash = "You don't have permission to remove this"
+            session.flash = "Error: You don't have permission to remove this"
+            redirect(URL('collection', 'view', args=[collection.id]))
     else:
-        response.flash = "Invalid collection or object selected"
+        session.flash = "Error: Invalid collection or object selected"
+        redirect(URL('collection', 'index'))
     return dict()
 
 def view():

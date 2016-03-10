@@ -116,7 +116,7 @@ def new():
         UserProposed = request.vars.user
         )
         db.commit
-        response.flash = "Trade created successfully begun"
-        #Redirect to view of the trade
-        redirect(URL('trades', 'view', args=[trade_id]))
+        session.flash = "Trade successfully created, now offer some objects!"
+        #Progress to offer own items
+        redirect(URL('trades', 'offer', args=[trade_id]))
     return dict(form = form)
