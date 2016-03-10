@@ -75,14 +75,15 @@ def have():
                 db.have_lists.insert(object_id = record.id)
                 db.commit
                 session.flash = "'" + record.name + "' successfully added to have list"
-                redirect(URL('object', 'view', args=[record.id]))
             else:
-                session.flash = "Object already in have list"
+                session.flash = "Error: '" + record.name + "' already in have list"
         else:
-            session.flash = "You don't have permission to add that"
+            session.flash = "Error: You don't have permission to add that"
+            redirect(URL('have', 'view', args=[auth.user.id]))
     else:
-        session.flash = "Object does not exist"
-    redirect(URL('have','view', args=[auth.user.id]))
+        session.flash = "Error: Object does not exist"
+        redirect(URL('have', 'view', args=[auth.user.id]))
+    redirect(URL('object', 'view', args=[record.id]))
     return dict()
 
 @auth.requires_login()
@@ -119,17 +120,21 @@ def want():
     record = db.objects(request.args(0))
     #Check if there exists an object with ID
     if (record):
-        #TODO: Add check to ensure that the object is 'public'
-        #Ensure object not already in list
-        count = db((db.want_lists.object_id == record.id) & (db.want_lists.user_id == auth.user.id)).count()
-        if (count == 0):
-            db.want_lists.insert(object_id = record.id)
-            db.commit
-            session.flash = "'" + record.name + "' successfully added to want list"
+        #Check to ensure that the object in another user's have list
+        count = db(db.have_lists.object_id == record.id).count()
+        if count > 0:
+            #Ensure object not already in own want list
+            count = db((db.want_lists.object_id == record.id) & (db.want_lists.user_id == auth.user.id)).count()
+            if (count == 0):
+                db.want_lists.insert(object_id = record.id)
+                db.commit
+                session.flash = "'" + record.name + "' successfully added to want list"
+            else:
+                session.flash = "Error: '" + record.name + "' already in want list"
             redirect(URL('object', 'view', args=[record.id]))
         else:
-            session.flash = "Object already in want list"
+            session.flash = "Error: You do not have permission to add this item to want list"
     else:
-        session.flash = "Object does not exist"
+        session.flash = "Error: Object does not exist"
     redirect(URL('want','view', args=[auth.user.id]))
     return dict()

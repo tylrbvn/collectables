@@ -49,17 +49,8 @@
         <!--<a href={{=URL('object','delete', args=[object.id])}} class = "btn btn-default">
         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete object</a>-->
       </div>
-      <div class="btn-group">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Add to list <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-          <li><a href={{=URL('object','have', args=[object.id])}}>Have list</a></li>
-          <li><a href={{=URL('object','want', args=[object.id])}}>Want list</a></li>
-        </ul>
-      </div>
-      <!--Display link to add to wish list if object belongs
-      to another user???-->
+      <a href={{=URL('object', 'have', args=[object.id])}} class = "btn btn-default">
+      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add to have list</a>
       {{else:}}
       <a href={{=URL('object', 'want', args=[object.id])}} class = "btn btn-primary">
       <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Add to want list</a>
