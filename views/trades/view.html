@@ -11,11 +11,38 @@
     {{proposed=(db(trade.UserProposed == db.auth_user.id).select())}}
     <h1>Trade Between You and {{=proposed[0].username}}</h1>
   </div>
-  <div class="panel-body">
-    Here are your trades [Have trades made, trades currently being done, notifications of users offering trades?]
 
-      We'll want to have a way to look into other users Have lists
-
-  </div>
 </div>
+<div class="col-md-5">
+    <h4>What you are offering:</h4>
+
+    {{for offer in offered:}}
+        <div class="col-sm-6 col-md-3">
+          <div class="thumbnail">
+            <a href="{{=URL('object','view', args=[offer.id])}}">
+              <h4 style="text-align:center"> {{=offer.name}}</h4>
+            </a>
+          </div>
+        </div>
+    {{pass}}
+</div>
+<div class="col-md-2">
+
+<span style="font-size:4em" class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>
+</div>
+
+
+<div class="col-md-5">
+    <h4>What you are asking for it:</h4>
+
+    {{for ask in asked:}}
+        <div class="col-sm-6 col-md-3">
+          <div class="thumbnail">
+            <a href="{{=URL('object','view', args=[ask.id])}}">
+              <h4 style="text-align:center"> {{=ask.name}}</h4>
+            </a>
+          </div>
+        </div>
+    {{pass}}
+    </div>
 

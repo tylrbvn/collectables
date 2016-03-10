@@ -10,7 +10,16 @@ def index():
 
 @auth.requires_login()
 def view():
-    return dict()
+    trade_id = request.args(0) #Get trade id from URL
+    objects_in_trade = db(trade_id == db.objects_in_trade.trade_id).select()
+    offered = []
+    asked = []
+    for object in objects_in_trade:
+        if object.offered == True:
+            offered += db(object.object_id == db.objects.id).select()
+        else:
+            asked += db(object.object_id == db.objects.id).select()
+    return dict(offered=offered, asked=asked)
 
 @auth.requires_login()
 def offer():
