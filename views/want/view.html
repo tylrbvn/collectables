@@ -34,41 +34,7 @@
     <!--Display previews of list contents-->
     <div class="row">
       {{for objects in objects:}}
-      <div class="col-sm-6 col-md-3">
-        <div class="thumbnail">
-          <a href="{{=URL('object','view', args=[objects.objects.id])}}">
-            <h4 style="text-align:center">{{=objects.objects.name}}</h4>
-          </a>
-          <div class="caption">
-            <p><strong>Type:</strong></p>
-            {{if len(objects.objects.type.split('|'))>0:}}
-            <ul>
-              {{for type in objects.objects.type.split('|'):}}
-                {{if len(type)>0:}}
-                  <li>{{=type}}</li>
-                {{pass}}
-              {{pass}}
-            </ul>
-            {{pass}}
-            <p>
-              <!--CONTROLS TO VIEW FULL INFO, REMOVE FROM LIST etc.-->
-              {{if ('removal' in globals()) and auth.is_logged_in():}}
-                <!--Give controls to view full info and remove the object from the list-->
-                <div class="btn-group" role="group">
-                  <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
-                  <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
-                  <a class="btn btn-danger btn-sm", role="button", href={{=URL('want','remove', args=[objects.objects.id])}}>
-                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove from list</a>
-                </div>
-              {{else:}}
-                <!--Else just give control to view full info-->
-                <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
-                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
-              {{pass}}
-            </p>
-          </div>
-        </div>
-      </div>
+        {{include 'sub_views/object_preview.html'}}
       {{pass}}
     </div>
   {{else:}}

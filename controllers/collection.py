@@ -172,7 +172,7 @@ def search():
                     search_term = (db.objects.user_id.like(owner_term))
             else:
                 response.flash = 'Error: Invalid username, user does not exist'
-                return dict(form = form)
+                return dict(form = form, control = 'search')
         #Allow for a blank search to return all objects
         constraint = (((db.objects_in_collections.collection_id == db.collections.id) & (db.collections.privacy == 'Public') &
                                 (db.objects_in_collections.object_id == db.objects.id)) | (db.objects.user_id == auth.user.id)) & (db.objects.user_id == db.auth_user.id)
@@ -192,11 +192,11 @@ def search():
         output = "Search complete: " + str(len(distinct)) + " result"
         if(len(distinct) != 1): output += "s"
         response.flash = output
-        return dict(form = form, results = results, distinct = distinct)
+        return dict(form = form, results = results, distinct = distinct, control = 'search')
     else:
         if form.errors:
             response.flash = 'One or more of the entries is incorrect'
-        return dict(form = form)
+        return dict(form = form, control = 'search')
 
 @auth.requires_login()
 def remove():
@@ -225,5 +225,5 @@ def view():
             colls = db((db.collections.id == collection_id) & (db.collections.privacy == 'Public') & (db.collections.user_id == db.auth_user.id)).select()
         if len(colls)>0:
             objects = db((db.objects_in_collections.collection_id == collection_id) & (db.objects_in_collections.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
-            return dict(collections = colls, objects = objects, removal = True)
-    return dict()
+            return dict(collections = colls, objects = objects, removal = True, control = 'collection')
+    return dict(control = 'collection')

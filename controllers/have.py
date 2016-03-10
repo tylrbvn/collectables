@@ -44,13 +44,13 @@ def view():
     user = db.auth_user(request.args(0))
     if (user):
         #Get list of objects in users have list
-        objects = db((db.have_lists.user_id == user.id) & (db.have_lists.object_id == db.objects.id)).select()
+        objects = db((db.have_lists.user_id == user.id) & (db.have_lists.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
         if auth.is_logged_in():
             if (user.id == auth.user.id):
                 #User logged in viewing their own list
-                return dict(objects = objects, user = user, removal = True)
+                return dict(objects = objects, user = user, removal = True, control = 'have')
         #User viewing another user's list or user not logged in viewing a list
-        return dict(objects = objects, user = user)
+        return dict(objects = objects, user = user, control = 'have')
     else:
         response.flash = "Invalid user"
         return dict()

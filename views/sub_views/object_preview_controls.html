@@ -1,0 +1,52 @@
+<p>
+  <!--CONTROLS TO VIEW FULL INFO, REMOVE FROM COLLECTION etc.-->
+  {{if control == 'collection':}}
+    {{if ('removal' in globals()) and auth.is_logged_in()  and (collections.collections.user_id == auth.user.id):}}
+      <!--Give controls to view full info and remove the comic from the box-->
+      <div class="btn-group" role="group">
+        <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
+        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
+        <a class="btn btn-danger btn-sm", role="button", href={{=URL('collection','remove', args=[collections.collections.id, objects.objects.id])}}>
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove from collection</a>
+      </div>
+      {{else:}}
+      <!--Else just give control to view full info-->
+      <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
+      <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
+    {{pass}}
+  {{elif control == 'have':}}
+    {{if ('removal' in globals()) and auth.is_logged_in():}}
+      <!--Give controls to view full info and remove the object from the list-->
+      <div class="btn-group" role="group">
+        <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
+        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
+        <a class="btn btn-danger btn-sm", role="button", href={{=URL('have','remove', args=[objects.objects.id])}}>
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove from list</a>
+      </div>
+    {{else:}}
+      <!--Else just give control to view full info-->
+      <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
+      <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
+      <a href={{=URL('object', 'want', args=[objects.objects.id])}} class = "btn btn-primary btn-sm">
+      <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Add to want list</a>
+    {{pass}}
+  {{elif control == 'want':}}
+    {{if ('removal' in globals()) and auth.is_logged_in():}}
+      <!--Give controls to view full info and remove the object from the list-->
+      <div class="btn-group" role="group">
+        <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
+        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
+        <a class="btn btn-danger btn-sm", role="button", href={{=URL('want','remove', args=[objects.objects.id])}}>
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove from list</a>
+      </div>
+    {{else:}}
+      <!--Else just give control to view full info-->
+      <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
+      <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
+    {{pass}}
+  {{else:}}
+    <!--Give control to view full info-->
+    <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
+    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
+  {{pass}}
+</p>

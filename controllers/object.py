@@ -3,9 +3,9 @@ def index():
     #Select all user's objects in alphabetical order by name
     objects = db((db.objects.user_id == auth.user.id) & (auth.user.id == db.auth_user.id)).select(orderby = db.objects.name)
     if len(objects)>0:
-        return dict(objects = objects)
+        return dict(objects = objects, control = 'object')
     else:
-        return dict()
+        return dict(control = 'object')
 
 @auth.requires_login()
 def add():
