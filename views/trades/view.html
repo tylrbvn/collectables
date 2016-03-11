@@ -8,8 +8,8 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     {{trade=db.trades(request.args(0))}}
-    {{proposed=(db(trade.UserProposed == db.auth_user.id).select())}}
-    <h1>Trade Between You and {{=proposed[0].username}}</h1>
+    {{proposed=(db(trade.UserProposed == db.auth_user.id).select().first())}}
+    <h1>Trade Between You and {{=proposed.username}}</h1>
   </div>
 
 </div>
@@ -44,5 +44,6 @@
           </div>
         </div>
     {{pass}}
-    </div>
+</div>
+{{=form}}
 

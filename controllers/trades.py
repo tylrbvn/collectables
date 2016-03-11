@@ -1,12 +1,21 @@
 @auth.requires_login()
 def index():
-    activeTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
+    userActiveTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
                       (db.trades.status == 'active')).select()
-    acceptedTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
+    userAcceptedTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
                       (db.trades.status == 'accepted')).select()
-    rejectedTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
+    userrejectedTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
                       (db.trades.status == 'rejected')).select()
-    return dict(activeTrades = activeTrades, acceptedTrades = acceptedTrades, rejectedTrades = rejectedTrades)
+
+    offeredActiveTrades = db((db.trades.UserProposed == auth.user.id) & \
+                      (db.trades.status == 'active')).select()
+    offeredAcceptedTrades = db((db.trades.UserProposed == auth.user.id) & \
+                      (db.trades.status == 'accepted')).select()
+    offeredRejectedTrades = db((db.trades.UserProposed == auth.user.id) & \
+                      (db.trades.status == 'rejected')).select()
+    return dict(userActiveTrades = userActiveTrades, userAcceptedTrades = userAcceptedTrades, \
+                userrejectedTrades = userrejectedTrades, offeredActiveTrades=offeredActiveTrades, \
+                offeredAcceptedTrades=offeredAcceptedTrades, offeredRejectedTrades=offeredRejectedTrades)
 
 @auth.requires_login()
 def view():
@@ -19,7 +28,12 @@ def view():
             offered += db(object.object_id == db.objects.id).select()
         else:
             asked += db(object.object_id == db.objects.id).select()
-    return dict(offered=offered, asked=asked)
+
+    form = FORM(DIV(DIV(A('Amend Offer', _href=URL('trades', 'offer', args=trade_id), _class = "btn btn-primary"),
+            _class="col-sm-9 col-sm-offset-3"),
+            _class="form-group"),
+            _class="form-horizontal")
+    return dict(offered=offered, asked=asked, form=form)
 
 @auth.requires_login()
 def offer():

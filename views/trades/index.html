@@ -16,12 +16,22 @@
 
   </div>
 </div>
+
+<div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2>Trades you've proposed</h2>
+      </div>
+      <div class="panel-body">
+        Here are trades that you've made to other people
+      </div>
+    </div>
 <!--Check that user has trades-->
   <h4>Active Trades:</h4>
   <div class="row">
-    {{if len(activeTrades)>0:}}
-        {{for activeTrades in activeTrades:}}
-            <div class="col-sm-6 col-md-3">
+    {{if len(userActiveTrades)>0:}}
+        {{for activeTrades in userActiveTrades:}}
+            <div class="col-sm-5 col-md-6">
               <div class="thumbnail">
                 <a href="{{=URL('trades','view', args=[activeTrades.trades.id])}}">
                   <h4 style="text-align:center">Between {{=activeTrades.auth_user.username}}
@@ -31,16 +41,18 @@
             </div>
         {{pass}}
     {{else:}}
-      <div class="alert alert-info" role="alert">
-        <strong>You don't have any trades.</strong>
-      </div>
+        <div class="col-sm-5 col-md-6">
+            <div class="alert alert-info" role="alert">
+                <strong>YYou don't have any trades.</strong>
+            </div>
+        </div>
     {{pass}}
   </div>
 
   <h4>Accepted Trades:</h4>
   <div class="row">
-    {{if len(acceptedTrades)>0:}}
-        {{for acceptedTrades in acceptedTrades:}}
+    {{if len(userAcceptedTrades)>0:}}
+        {{for acceptedTrades in userAcceptedTrades:}}
             <div class="col-sm-6 col-md-3">
               <div class="thumbnail">
                 <a href="{{=URL('trade','view', args=[acceptedTrades.trades.id])}}">
@@ -51,16 +63,18 @@
             </div>
         {{pass}}
     {{else:}}
-      <div class="alert alert-info" role="alert">
-        <strong>You don't have any accepted trades.</strong>
-      </div>
+        <div class="col-sm-5 col-md-6">
+            <div class="alert alert-info" role="alert">
+                <strong>You don't have any accepted trades.</strong>
+            </div>
+        </div>
     {{pass}}
   </div>
 
   <h4> Rejected Trades:</h4>
   <div class="row">
-    {{if len(rejectedTrades)>0:}}
-        {{for rejectedTrades in rejectedTrades:}}
+    {{if len(userrejectedTrades)>0:}}
+        {{for rejectedTrades in userrejectedTrades:}}
             <div class="col-sm-6 col-md-3">
               <div class="thumbnail">
                 <a href="{{=URL('trade','view', args=[rejectedTrades.trades.id])}}">
@@ -71,8 +85,88 @@
             </div>
         {{pass}}
     {{else:}}
-      <div class="alert alert-info" role="alert">
-        <strong>You don't have any rejected trades (yay).</strong>
-      </div>
+        <div class="col-sm-5 col-md-6">
+            <div class="alert alert-info" role="alert">
+                <strong>You don't have any rejected trades (yay).</strong>
+            </div>
+        </div>
     {{pass}}
   </div>
+  </div>
+
+<div class="col-md-6">
+  <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2>Trades proposed to you</h2>
+      </div>
+      <div class="panel-body">
+        Here are trades that other people have made to you
+      </div>
+    </div>
+  <h4>Active Trades:</h4>
+  <div class="row">
+    {{if len(offeredActiveTrades)>0:}}
+        {{for activeTrades in offeredActiveTrades:}}
+            <div class="col-sm-5 col-md-6">
+              <div class="thumbnail">
+                <a href="{{=URL('trades','view', args=[activeTrades.trades.id])}}">
+                  <h4 style="text-align:center">Between {{=activeTrades.auth_user.username}}
+                      on {{=activeTrades.trades.date}}</h4>
+                </a>
+              </div>
+            </div>
+        {{pass}}
+    {{else:}}
+        <div class="col-sm-5 col-md-6">
+            <div class="alert alert-info" role="alert">
+                <strong>You don't have any trades.</strong>
+            </div>
+        </div>
+    {{pass}}
+  </div>
+
+  <h4>Accepted Trades:</h4>
+  <div class="row">
+    {{if len(offeredAcceptedTrades)>0:}}
+        {{for acceptedTrades in offeredAcceptedTrades:}}
+            <div class="col-sm-6 col-md-3">
+              <div class="thumbnail">
+                <a href="{{=URL('trade','view', args=[acceptedTrades.trades.id])}}">
+                  <h4 style="text-align:center">Between {{=acceptedTrades.auth_user.username}}
+                      on {{=acceptedTrades.trades.date}}</h4>
+                </a>
+              </div>
+            </div>
+        {{pass}}
+    {{else:}}
+        <div class="col-sm-5 col-md-6">
+            <div class="alert alert-info" role="alert">
+                <strong>You don't have any accepted trades.</strong>
+            </div>
+        </div>
+    {{pass}}
+  </div>
+
+  <h4> Rejected Trades:</h4>
+  <div class="row">
+    {{if len(offeredRejectedTrades)>0:}}
+        {{for rejectedTrades in offeredRejectedTrades:}}
+            <div class="col-sm-6 col-md-3">
+              <div class="thumbnail">
+                <a href="{{=URL('trade','view', args=[rejectedTrades.trades.id])}}">
+                  <h4 style="text-align:center">Between {{=rejectedTrades.auth_user.username}}
+                      on {{=rejectedTrades.trades.date}}</h4>
+                </a>
+              </div>
+            </div>
+        {{pass}}
+    {{else:}}
+        <div class="col-sm-5 col-md-6">
+            <div class="alert alert-info" role="alert">
+                <strong>You don't have any rejected trades (yay).</strong>
+            </div>
+        </div>
+    {{pass}}
+  </div>
+  </div>
+</div>
