@@ -96,7 +96,7 @@ def search():
                 DIV(LABEL('Type(s):', _for='type', _class="control-label col-sm-3"),
                     DIV(SELECT(_name='type', *[OPTION(type) for type in object_types],
                     _class = "form-control select", _multiple=True), _class="col-sm-4"),
-                    DIV(EM("(To select multiple options hold down ctrl on Windows or cmd on Macintosh)"), _class="col-sm-2"),
+                    DIV(EM("(To select multiple options hold down ctrl on Windows or cmd on Macintosh)"), _class="col-sm-2 mobile-hide"),
                      _class = "form-group"),
                 DIV(DIV(LABEL('Value:', _for='value', _class="control-label col-sm-3"),
                     DIV(DIV(DIV('£', _class="input-group-addon"),
