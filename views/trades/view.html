@@ -7,43 +7,54 @@
 <!--Title and description-->
 <div class="panel panel-default">
   <div class="panel-heading">
-    {{trade=db.trades(request.args(0))}}
-    {{proposed=(db(trade.UserProposed == db.auth_user.id).select().first())}}
-    <h1>Trade Between You and {{=proposed.username}}</h1>
+    <!-- determine who is the other user depending on who proposed the trade (TODO: this shit is messy)-->
+    {{if trade.UserProposed==auth.user_id:}}
+        {{otherUser=(db(trade.UserProposing == db.auth_user.id).select().first())}}
+        <h1>Trade Between You and {{=otherUser.username}}</h1>
+    {{else:}}
+        {{otherUser=(db(trade.UserProposed == db.auth_user.id).select().first())}}
+        <h1>Trade Between You and {{=otherUser.username}}</h1>
+    {{pass}}
   </div>
-
 </div>
-<div class="col-md-5">
-    <h4>What you are offering:</h4>
-
-    {{for offer in offered:}}
-        <div class="col-sm-6 col-md-3">
-          <div class="thumbnail">
-            <a href="{{=URL('object','view', args=[offer.id])}}">
-              <h4 style="text-align:center"> {{=offer.name}}</h4>
-            </a>
-          </div>
-        </div>
-    {{pass}}
-</div>
-<div class="col-md-2">
-
-<span style="font-size:4em" class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>
-</div>
-
 
 <div class="col-md-5">
-    <h4>What you are asking for it:</h4>
-
-    {{for ask in asked:}}
-        <div class="col-sm-6 col-md-3">
-          <div class="thumbnail">
-            <a href="{{=URL('object','view', args=[ask.id])}}">
-              <h4 style="text-align:center"> {{=ask.name}}</h4>
-            </a>
-          </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>Your Objects:</h4>
         </div>
-    {{pass}}
+        <div class="panel-body">
+            {{for yourObject in yourObjects:}}
+                <div class="col-sm-6 col-md-3">
+                        <a href="{{=URL('object','view', args=[yourObject.id])}}">
+                            <h4 style="text-align:center"> {{=yourObject.name}}</h4>
+                        </a>
+                </div>
+            {{pass}}
+        </div>
+    </div>
+</div>
+
+<div class="col-md-1">
+    <span style="font-size:4em" class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>
+</div>
+
+
+<div class="col-md-5">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>{{=otherUser.username}} Objects:</h4>
+        </div>
+        <div class="panel-body">
+            {{for theirObject in theirObjects:}}
+                <div class="col-sm-6 col-md-3">
+                        <a href="{{=URL('object','view', args=[theirObject.id])}}">
+                            <h4 style="text-align:center"> {{=theirObject.name}}</h4>
+                        </a>
+                </div>
+            {{pass}}
+        </div>
+    </div>
 </div>
 {{=form}}
 

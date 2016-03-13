@@ -9,12 +9,6 @@
   <div class="panel-heading">
     <h1>Your Trades</h1>
   </div>
-  <div class="panel-body">
-    Here are your trades [Have trades made, trades currently being done, notifications of users offering trades?]
-
-      We'll want to have a way to look into other users Have lists
-
-  </div>
 </div>
 
 <div class="col-md-6">
@@ -34,7 +28,7 @@
             <div class="col-sm-5 col-md-6">
               <div class="thumbnail">
                 <a href="{{=URL('trades','view', args=[activeTrades.trades.id])}}">
-                  <h4 style="text-align:center">Between {{=activeTrades.auth_user.username}}
+                  <h4 style="text-align:center">{{=activeTrades.auth_user.username}}
                       on {{=activeTrades.trades.date}}</h4>
                 </a>
               </div>
@@ -43,7 +37,7 @@
     {{else:}}
         <div class="col-sm-5 col-md-6">
             <div class="alert alert-info" role="alert">
-                <strong>You don't have any trades.</strong>
+                <strong>You don't have any active trades.</strong>
             </div>
         </div>
     {{pass}}
@@ -56,7 +50,7 @@
             <div class="col-sm-6 col-md-3">
               <div class="thumbnail">
                 <a href="{{=URL('trade','view', args=[acceptedTrades.trades.id])}}">
-                  <h4 style="text-align:center">Between {{=acceptedTrades.auth_user.username}}
+                  <h4 style="text-align:center">{{=acceptedTrades.auth_user.username}}
                       on {{=acceptedTrades.trades.date}}</h4>
                 </a>
               </div>
@@ -78,7 +72,7 @@
             <div class="col-sm-6 col-md-3">
               <div class="thumbnail">
                 <a href="{{=URL('trade','view', args=[rejectedTrades.trades.id])}}">
-                  <h4 style="text-align:center">Between {{=rejectedTrades.auth_user.username}}
+                  <h4 style="text-align:center">{{=rejectedTrades.auth_user.username}}
                       on {{=rejectedTrades.trades.date}}</h4>
                 </a>
               </div>
@@ -87,7 +81,7 @@
     {{else:}}
         <div class="col-sm-5 col-md-6">
             <div class="alert alert-info" role="alert">
-                <strong>You don't have any rejected trades (yay).</strong>
+                <strong>You don't have any rejected trades.</strong>
             </div>
         </div>
     {{pass}}
@@ -110,7 +104,7 @@
             <div class="col-sm-5 col-md-6">
               <div class="thumbnail">
                 <a href="{{=URL('trades','view', args=[activeTrades.trades.id])}}">
-                  <h4 style="text-align:center">Between {{=activeTrades.auth_user.username}}
+                  <h4 style="text-align:center">{{=activeTrades.auth_user.username}}
                       on {{=activeTrades.trades.date}}</h4>
                 </a>
               </div>
@@ -119,7 +113,7 @@
     {{else:}}
         <div class="col-sm-5 col-md-6">
             <div class="alert alert-info" role="alert">
-                <strong>You don't have any trades.</strong>
+                <strong>You don't have any active trades.</strong>
             </div>
         </div>
     {{pass}}
@@ -132,7 +126,7 @@
             <div class="col-sm-6 col-md-3">
               <div class="thumbnail">
                 <a href="{{=URL('trade','view', args=[acceptedTrades.trades.id])}}">
-                  <h4 style="text-align:center">Between {{=acceptedTrades.auth_user.username}}
+                  <h4 style="text-align:center">{{=acceptedTrades.auth_user.username}}
                       on {{=acceptedTrades.trades.date}}</h4>
                 </a>
               </div>
@@ -154,7 +148,7 @@
             <div class="col-sm-6 col-md-3">
               <div class="thumbnail">
                 <a href="{{=URL('trade','view', args=[rejectedTrades.trades.id])}}">
-                  <h4 style="text-align:center">Between {{=rejectedTrades.auth_user.username}}
+                  <h4 style="text-align:center">{{=rejectedTrades.auth_user.username}}
                       on {{=rejectedTrades.trades.date}}</h4>
                 </a>
               </div>
@@ -163,7 +157,7 @@
     {{else:}}
         <div class="col-sm-5 col-md-6">
             <div class="alert alert-info" role="alert">
-                <strong>You don't have any rejected trades (yay).</strong>
+                <strong>You don't have any rejected trades.</strong>
             </div>
         </div>
     {{pass}}

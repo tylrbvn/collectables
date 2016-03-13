@@ -21,19 +21,27 @@ def index():
 def view():
     trade_id = request.args(0) #Get trade id from URL
     objects_in_trade = db(trade_id == db.objects_in_trade.trade_id).select()
-    offered = []
-    asked = []
-    for object in objects_in_trade:
-        if object.offered == True:
-            offered += db(object.object_id == db.objects.id).select()
-        else:
-            asked += db(object.object_id == db.objects.id).select()
+    trade = db(trade_id == db.trades.id).select().first() #We need to find who proposed to trade to determine whose objects are whose
+    yourObjects = []
+    theirObjects = []
+    if trade.UserProposing == auth.user.id: #If this is a trade that we proposed
+        for object in objects_in_trade:
+            if object.offered == True:
+                yourObjects += db(object.object_id == db.objects.id).select()
+            else:
+                theirObjects += db(object.object_id == db.objects.id).select()
+    else:
+        for object in objects_in_trade:
+            if object.offered == True:
+                theirObjects += db(object.object_id == db.objects.id).select()
+            else:
+                yourObjects += db(object.object_id == db.objects.id).select()
 
     form = FORM(DIV(DIV(A('Amend Offer', _href=URL('trades', 'offer', args=trade_id), _class = "btn btn-primary"),
             _class="col-sm-9 col-sm-offset-3"),
             _class="form-group"),
             _class="form-horizontal")
-    return dict(offered=offered, asked=asked, form=form)
+    return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects, form=form)
 
 @auth.requires_login()
 def offer():

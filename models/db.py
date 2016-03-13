@@ -103,6 +103,7 @@ db.define_table('want_lists',
 
 import datetime
 # Trades Table: stores details about Trades
+# TODO: this is subject to change. Especially the user proposing name. Fuckin confusing
 db.define_table('trades',
                 Field('UserProposing', db.auth_user), # User proposing trade (really couldn't think of better name)
                 Field('UserProposed', db.auth_user), # User being proposed to
