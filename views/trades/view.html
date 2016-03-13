@@ -56,5 +56,21 @@
         </div>
     </div>
 </div>
-{{=form}}
 
+<div class="col-md-5">
+
+    {{if trade.status == 'active':}}
+        {{=form}}
+    {{elif trade.status == 'accepted':}}
+        <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Trade was accepted</strong>
+        </div>
+    {{elif trade.status == 'rejected':}}
+        <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Trade was rejected</strong>
+        </div>
+    {{pass}}
+
+</div>

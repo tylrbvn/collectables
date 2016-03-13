@@ -36,32 +36,34 @@ def view():
                 theirObjects += db(object.object_id == db.objects.id).select()
             else:
                 yourObjects += db(object.object_id == db.objects.id).select()
+    if trade.status == 'active':
+        form = FORM(DIV(DIV(INPUT(_class = "btn btn-success", _value='Accept Trade', _type="submit"),
+                    A('Amend Offer', _href=URL('trades', 'offer', args=trade_id), _class = "btn btn-primary"),
+                _class="col-sm-9 col-sm-offset-3"),
+                _class="form-group"),
+                _class="form-horizontal")
 
-    form = FORM(DIV(DIV(INPUT(_class = "btn btn-success", _value='Accept Trade', _type="submit"),
-                A('Amend Offer', _href=URL('trades', 'offer', args=trade_id), _class = "btn btn-primary"),
-            _class="col-sm-9 col-sm-offset-3"),
-            _class="form-group"),
-            _class="form-horizontal")
+        #If the user accepts the trade, switch object id's of users in trade.
+        if form.accepts(request, session):
+            #update trade to be accepted
+            trade.update_record(status='accepted')
+            if trade.UserProposing == auth.user.id: #If this is a trade that we proposed
+                for yourObject in yourObjects:
+                    yourObject.update_record(user_id=trade.UserProposed) #object user id is now the user we proposed to
+                for theirObject in theirObjects:
+                    theirObject.update_record(user_id=trade.UserProposing) #their objects are ours
+            else:
+                for yourObject in yourObjects:
+                    yourObject.update_record(user_id=trade.UserProposing) #object user id is now the user proposing
+                for theirObject in theirObjects:
+                    theirObject.update_record(user_id=trade.UserProposed) #their objects are ours
 
-    #If the user accepts the trade, switch object id's of users in trade.
-    if form.accepts(request, session):
-        #update trade to be accepted
-        trade.update_record(status='accepted')
-        if trade.UserProposing == auth.user.id: #If this is a trade that we proposed
-            for yourObject in yourObjects:
-                yourObject.update_record(user_id=trade.UserProposed) #object user id is now the user we proposed to
-            for theirObject in theirObjects:
-                theirObject.update_record(user_id=trade.UserProposing) #their objects are ours
-        else:
-            for yourObject in yourObjects:
-                yourObject.update_record(user_id=trade.UserProposing) #object user id is now the user proposing
-            for theirObject in theirObjects:
-                theirObject.update_record(user_id=trade.UserProposed) #their objects are ours
-
-        session.flash = "Trade Completed! Enjoy your new items!"
-        #Progress to offer own items
-        redirect(URL('trades', 'index'))
-    return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects, form=form)
+            session.flash = "Trade Completed! Enjoy your new items!"
+            #Progress to offer own items
+            redirect(URL('trades', 'index'))
+        return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects, form=form)
+    else:
+        return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects)
 
 @auth.requires_login()
 def offer():

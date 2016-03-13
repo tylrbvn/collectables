@@ -47,9 +47,9 @@
   <div class="row">
     {{if len(userAcceptedTrades)>0:}}
         {{for acceptedTrades in userAcceptedTrades:}}
-            <div class="col-sm-6 col-md-3">
+            <div class="col-sm-5 col-md-6">
               <div class="thumbnail">
-                <a href="{{=URL('trade','view', args=[acceptedTrades.trades.id])}}">
+                <a href="{{=URL('trades','view', args=[acceptedTrades.trades.id])}}">
                   <h4 style="text-align:center">{{=acceptedTrades.auth_user.username}}
                       on {{=acceptedTrades.trades.date}}</h4>
                 </a>
@@ -69,9 +69,9 @@
   <div class="row">
     {{if len(userrejectedTrades)>0:}}
         {{for rejectedTrades in userrejectedTrades:}}
-            <div class="col-sm-6 col-md-3">
+            <div class="col-sm-5 col-md-6">
               <div class="thumbnail">
-                <a href="{{=URL('trade','view', args=[rejectedTrades.trades.id])}}">
+                <a href="{{=URL('trades','view', args=[rejectedTrades.trades.id])}}">
                   <h4 style="text-align:center">{{=rejectedTrades.auth_user.username}}
                       on {{=rejectedTrades.trades.date}}</h4>
                 </a>
@@ -123,9 +123,9 @@
   <div class="row">
     {{if len(offeredAcceptedTrades)>0:}}
         {{for acceptedTrades in offeredAcceptedTrades:}}
-            <div class="col-sm-6 col-md-3">
+            <div class="col-sm-5 col-md-6">
               <div class="thumbnail">
-                <a href="{{=URL('trade','view', args=[acceptedTrades.trades.id])}}">
+                <a href="{{=URL('trades','view', args=[acceptedTrades.trades.id])}}">
                   <h4 style="text-align:center">{{=acceptedTrades.auth_user.username}}
                       on {{=acceptedTrades.trades.date}}</h4>
                 </a>
@@ -145,9 +145,9 @@
   <div class="row">
     {{if len(offeredRejectedTrades)>0:}}
         {{for rejectedTrades in offeredRejectedTrades:}}
-            <div class="col-sm-6 col-md-3">
+            <div class="col-sm-5 col-md-6">
               <div class="thumbnail">
-                <a href="{{=URL('trade','view', args=[rejectedTrades.trades.id])}}">
+                <a href="{{=URL('trades','view', args=[rejectedTrades.trades.id])}}">
                   <h4 style="text-align:center">{{=rejectedTrades.auth_user.username}}
                       on {{=rejectedTrades.trades.date}}</h4>
                 </a>
