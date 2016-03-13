@@ -73,6 +73,7 @@ def offer():
     if trade:
         if trade.UserProposing == auth.user.id:
             #Get list of users objects in have list
+            #TODO: Remove objects already being offered
             objects = db((db.have_lists.user_id == auth.user.id) & (db.have_lists.object_id == db.objects.id)).select()
             form = FORM(DIV(LABEL('Select object to offer:', _for='objects', _class="control-label col-sm-3"),
                         DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
@@ -93,7 +94,8 @@ def offer():
                     response.flash = 'Object successfully added to offer'
                 else:
                     response.flash = "Error: You've already offered this object!"
-            return dict(form=form, no_of_objects = len(objects))
+            objects_offered = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.offered == True) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
+            return dict(form=form, no_of_objects = len(objects), objects_offered = objects_offered, control = 'offer')
         else:
             response.flash = 'Error: You can not offer in this trade!'
     else:
@@ -128,7 +130,8 @@ def ask():
                     response.flash = 'Object successfully added to request'
                 else:
                     response.flash = "Error: You've already requested this object!"
-            return dict(form=form, no_of_objects = len(objects))
+            objects_requested = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.asked == True) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
+            return dict(form=form, no_of_objects = len(objects), objects_requested = objects_requested, control = 'ask')
         else:
             response.flash = 'Error: You can not request in this trade!'
     else:

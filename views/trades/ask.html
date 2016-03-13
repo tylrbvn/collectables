@@ -8,6 +8,12 @@
   <h2>Request object in trade</h2>
   {{if (no_of_objects>0):}}
     {{=form}}
+    {{if len(objects_requested) > 0:}}
+    <h4>Objects requested:</h4>
+      {{for objects in objects_requested:}}
+        {{include 'sub_views/object_preview.html'}}
+      {{pass}}
+    {{pass}}
   {{else:}}
   <div class="alert alert-danger" role="alert">
     <strong>The user has no objects in their have list.</strong>

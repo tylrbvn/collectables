@@ -8,6 +8,12 @@
   <h2>Offer object in trade</h2>
   {{if (no_of_objects>0):}}
     {{=form}}
+    {{if len(objects_offered) > 0:}}
+    <h4>Objects offered:</h4>
+      {{for objects in objects_offered:}}
+        {{include 'sub_views/object_preview.html'}}
+      {{pass}}
+    {{pass}}
   {{else:}}
   <div class="alert alert-danger" role="alert">
     <strong>There are no objects to add.</strong>
