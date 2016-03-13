@@ -7,11 +7,11 @@ def index():
     userrejectedTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
                       (db.trades.status == 'rejected')).select()
 
-    offeredActiveTrades = db((db.trades.UserProposed == auth.user.id) & \
+    offeredActiveTrades = db((db.trades.UserProposed == auth.user.id) & (db.trades.UserProposing == db.auth_user.id) & \
                       (db.trades.status == 'active')).select()
-    offeredAcceptedTrades = db((db.trades.UserProposed == auth.user.id) & \
+    offeredAcceptedTrades = db((db.trades.UserProposed == auth.user.id) & (db.trades.UserProposing == db.auth_user.id) & \
                       (db.trades.status == 'accepted')).select()
-    offeredRejectedTrades = db((db.trades.UserProposed == auth.user.id) & \
+    offeredRejectedTrades = db((db.trades.UserProposed == auth.user.id) & (db.trades.UserProposing == db.auth_user.id) & \
                       (db.trades.status == 'rejected')).select()
     return dict(userActiveTrades = userActiveTrades, userAcceptedTrades = userAcceptedTrades, \
                 userrejectedTrades = userrejectedTrades, offeredActiveTrades=offeredActiveTrades, \
