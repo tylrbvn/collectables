@@ -49,6 +49,7 @@ def edit():
     record = db.objects(request.args(0))
     db.objects.id.readable = db.objects.id.writable = False
     db.objects.user_id.readable = db.objects.user_id.writable = False
+    db.objects.likes.readable = db.objects.likes.writable = False
     #Check if there exists an object with ID
     if(record):
         #Check user owns that object
@@ -89,6 +90,7 @@ def have():
 @auth.requires_login()
 def new():
     db.objects.user_id.readable = db.objects.user_id.writable = False
+    db.objects.likes.readable = db.objects.likes.writable = False
     form = SQLFORM(db.objects)
     if form.accepts(request.vars, session):
         response.flash = 'New object successfully created.'
