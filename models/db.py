@@ -60,10 +60,10 @@ object_types = ['Advertising and brand',
                 'Themed',
                 'Toys and Games']
 
-status = ['active',
+status = ['draft',
+          'active',
           'accepted',
-          'rejected',
-          'amended']
+          'rejected']
 
 # Objects Table: stores details on each object
 db.define_table('objects',
@@ -109,7 +109,8 @@ db.define_table('trades',
                 Field('UserProposing', db.auth_user), # User proposing trade (really couldn't think of better name)
                 Field('UserProposed', db.auth_user), # User being proposed to
                 Field('date', default=datetime.date.today()),   # adds current date by default
-                Field('status', requires=IS_IN_SET(status), default=status[0]))
+                Field('status', requires=IS_IN_SET(status), default=status[0]),
+                Field('awaiting', requires=IS_IN_SET(['proposed', 'proposing']), default='proposing', writable=False, readable=False))
 
 # Objects in Trade Table: stores relation between objects and the trades they are in
 db.define_table('objects_in_trade',

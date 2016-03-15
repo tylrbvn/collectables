@@ -58,9 +58,15 @@
 </div>
 
 <div class="col-md-5">
-
-    {{if (trade.status == 'active') and (auth.user.id == trade.UserProposed):}}
-        {{=form}}
+    {{if trade.status == 'active':}}
+      {{if (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed) or (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing):}}
+          {{=form}}
+      {{else:}}
+        <div class="alert alert-info alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Awaiting a response from your trading partner</strong>
+        </div>
+      {{pass}}
     {{elif trade.status == 'accepted':}}
         <div class="alert alert-info alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -72,5 +78,4 @@
             <strong>Trade was rejected</strong>
         </div>
     {{pass}}
-
 </div>

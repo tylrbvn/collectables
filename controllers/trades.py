@@ -4,8 +4,10 @@ def index():
                       (db.trades.status == 'active')).select()
     userAcceptedTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
                       (db.trades.status == 'accepted')).select()
-    userrejectedTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
+    userRejectedTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
                       (db.trades.status == 'rejected')).select()
+    userDraftTrades = db((db.trades.UserProposing == auth.user.id) & (db.trades.UserProposed == db.auth_user.id) & \
+                      (db.trades.status == 'draft')).select()
 
     offeredActiveTrades = db((db.trades.UserProposed == auth.user.id) & (db.trades.UserProposing == db.auth_user.id) & \
                       (db.trades.status == 'active')).select()
@@ -14,56 +16,63 @@ def index():
     offeredRejectedTrades = db((db.trades.UserProposed == auth.user.id) & (db.trades.UserProposing == db.auth_user.id) & \
                       (db.trades.status == 'rejected')).select()
     return dict(userActiveTrades = userActiveTrades, userAcceptedTrades = userAcceptedTrades, \
-                userrejectedTrades = userrejectedTrades, offeredActiveTrades=offeredActiveTrades, \
+                userrejectedTrades = userRejectedTrades, userDraftTrades = userDraftTrades, offeredActiveTrades=offeredActiveTrades, \
                 offeredAcceptedTrades=offeredAcceptedTrades, offeredRejectedTrades=offeredRejectedTrades)
 
 @auth.requires_login()
 def view():
-    trade_id = request.args(0) #Get trade id from URL
-    objects_in_trade = db(trade_id == db.objects_in_trade.trade_id).select()
-    trade = db(trade_id == db.trades.id).select().first() #We need to find who proposed to trade to determine whose objects are whose
-    yourObjects = []
-    theirObjects = []
-    if trade.UserProposing == auth.user.id: #If this is a trade that we proposed
-        for object in objects_in_trade:
-            if object.offered == True:
-                yourObjects += db(object.object_id == db.objects.id).select()
-            else:
-                theirObjects += db(object.object_id == db.objects.id).select()
-    else: #This is a trade that is being proposed to us
-        for object in objects_in_trade:
-            if object.offered == True:
-                theirObjects += db(object.object_id == db.objects.id).select()
-            else:
-                yourObjects += db(object.object_id == db.objects.id).select()
-    if (trade.status == 'active') and (auth.user.id == trade.UserProposed):
-        form = FORM(DIV(DIV(INPUT(_class = "btn btn-success", _value='Accept Trade', _type="submit"),
-                    A('Amend Offer', _href=URL('trades', 'offer', args=trade_id), _class = "btn btn-primary"),
-                _class="col-sm-9 col-sm-offset-3"),
-                _class="form-group"),
-                _class="form-horizontal")
-
-        #If the user accepts the trade, switch object id's of users in trade.
-        if form.accepts(request, session):
-            #update trade to be accepted
-            trade.update_record(status='accepted')
-            if trade.UserProposing == auth.user.id: #If this is a trade that we proposed
-                for yourObject in yourObjects:
-                    yourObject.update_record(user_id=trade.UserProposed) #object user id is now the user we proposed to
-                for theirObject in theirObjects:
-                    theirObject.update_record(user_id=trade.UserProposing) #their objects are ours
-            else:
-                for yourObject in yourObjects:
-                    yourObject.update_record(user_id=trade.UserProposing) #object user id is now the user proposing
-                for theirObject in theirObjects:
-                    theirObject.update_record(user_id=trade.UserProposed) #their objects are ours
-
-            session.flash = "Trade Completed! Enjoy your new items!"
-            #Progress to offer own items
+    trade = db.trades(request.args(0))  #We need to find who proposed to trade to determine whose objects are whose
+    if trade:
+        objects_in_trade = db(trade.id == db.objects_in_trade.trade_id).select()
+        yourObjects = []
+        theirObjects = []
+        if trade.UserProposing == auth.user.id: #If this is a trade that we proposed
+            for object in objects_in_trade:
+                if object.offered == True:
+                    yourObjects += db(object.object_id == db.objects.id).select()
+                else:
+                    theirObjects += db(object.object_id == db.objects.id).select()
+        elif trade.UserProposed == auth.user.id: #This is a trade that is being proposed to us
+            for object in objects_in_trade:
+                if object.offered == True:
+                    theirObjects += db(object.object_id == db.objects.id).select()
+                else:
+                    yourObjects += db(object.object_id == db.objects.id).select()
+        else:
+            #If the user
+            session.flash = "Error: You do not have permission to view this trade"
             redirect(URL('trades', 'index'))
-        return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects, form=form)
+        if (trade.status == 'active') and (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed) or (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing):
+            form = FORM(DIV(DIV(INPUT(_class = "btn btn-success", _value='Accept Trade', _type="submit"),
+                        A('Amend Offer', _href=URL('trades', 'offer', args=trade.id), _class = "btn btn-primary"),
+                    _class="col-sm-9 col-sm-offset-3"),
+                    _class="form-group"),
+                    _class="form-horizontal")
+
+            #If the user accepts the trade, switch object id's of users in trade.
+            if form.accepts(request, session):
+                #update trade to be accepted
+                trade.update_record(status='accepted')
+                if trade.UserProposing == auth.user.id: #If this is a trade that we proposed
+                    for yourObject in yourObjects:
+                        yourObject.update_record(user_id=trade.UserProposed) #object user id is now the user we proposed to
+                    for theirObject in theirObjects:
+                        theirObject.update_record(user_id=trade.UserProposing) #their objects are ours
+                else:
+                    for yourObject in yourObjects:
+                        yourObject.update_record(user_id=trade.UserProposing) #object user id is now the user proposing
+                    for theirObject in theirObjects:
+                        theirObject.update_record(user_id=trade.UserProposed) #their objects are ours
+
+                session.flash = "Trade Completed! Enjoy your new items!"
+                #Progress to offer own items
+                redirect(URL('trades', 'index'))
+            return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects, form=form)
+        else:
+            return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects)
     else:
-        return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects)
+        session.flash = "Error: Invalid trade ID"
+        redirect(URL('trades', 'index'))
 
 @auth.requires_login()
 def offer():
@@ -71,7 +80,7 @@ def offer():
     trade = db.trades(request.args(0))
     #Check trade exists
     if trade:
-        if trade.UserProposing == auth.user.id:
+        if trade.status == 'active' or trade.status == 'draft':
             #Get list of users objects in have list
             #TODO: Remove objects already being offered
             objects = db((db.have_lists.user_id == auth.user.id) & (db.have_lists.object_id == db.objects.id)).select()
@@ -83,21 +92,36 @@ def offer():
                         _class="col-sm-9 col-sm-offset-3"),
                         _class="form-group"),
                         _class="form-horizontal")
-            if form.accepts(request, session):
-                #Ensure object not already in trade
-                count = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.object_id == request.vars.objects)).count()
-                if (count == 0):
-                    db.objects_in_trade.insert(object_id = request.vars.objects,
-                    trade_id = trade.id,
-                    offered = True)
-                    db.commit
-                    response.flash = 'Object successfully added to offer'
-                else:
-                    response.flash = "Error: You've already offered this object!"
-            objects_offered = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.offered == True) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
-            return dict(form=form, no_of_objects = len(objects), objects_offered = objects_offered, control = 'offer')
+            if trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing:
+                if form.accepts(request, session):
+                    #Ensure object not already in trade
+                    count = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.object_id == request.vars.objects)).count()
+                    if (count == 0):
+                        db.objects_in_trade.insert(object_id = request.vars.objects,
+                        trade_id = trade.id,
+                        offered = True)
+                        db.commit
+                        response.flash = 'Object successfully added to offer'
+                    else:
+                        response.flash = "Error: You've already offered this object!"
+                objects_offered = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.offered == True) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
+                return dict(form=form, no_of_objects = len(objects), objects_offered = objects_offered, control = 'offer')
+            elif trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed:
+                if form.accepts(request, session):
+                    #Ensure object not already in trade
+                    count = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.object_id == request.vars.objects)).count()
+                    if (count == 0):
+                        db.objects_in_trade.insert(object_id = request.vars.objects,
+                        trade_id = trade.id,
+                        asked = True)
+                        db.commit
+                        response.flash = 'Object successfully added to offer'
+                    else:
+                        response.flash = "Error: You've already offered this object!"
+                objects_offered = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.asked == True) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
+                return dict(form=form, no_of_objects = len(objects), objects_offered = objects_offered, control = 'offer')
         else:
-            response.flash = 'Error: You can not offer in this trade!'
+            response.flash = 'Error: This trade is inactive!'
     else:
         response.flash = 'Error: This trade does not exist!'
     return dict()
@@ -108,30 +132,54 @@ def ask():
     trade = db.trades(request.args(0))
     #Check trade exists
     if trade:
-        if trade.UserProposing == auth.user.id:
+        if trade.status == 'active' or trade.status == 'draft':
             #Get list of objects in other user's have list
-            objects = db((db.have_lists.user_id == trade.UserProposed) & (db.have_lists.object_id == db.objects.id)).select()
-            form = FORM(DIV(LABEL('Select object to request:', _for='objects', _class="control-label col-sm-3"),
-                        DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
-                        _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
-                        DIV(DIV(INPUT(_class = "btn btn-default", _value='Add to request', _type="submit"),
-                        A('Initiate trade', _href=URL('trades', 'view', args=trade.id), _class = "btn btn-primary"),
-                        _class="col-sm-9 col-sm-offset-3"),
-                        _class="form-group"),
-                        _class="form-horizontal")
-            if form.accepts(request, session):
-                #Ensure object not already in trade
-                count = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.object_id == request.vars.objects)).count()
-                if (count == 0):
-                    db.objects_in_trade.insert(object_id = request.vars.objects,
-                    trade_id = trade.id,
-                    asked = True)
-                    db.commit
-                    response.flash = 'Object successfully added to request'
-                else:
-                    response.flash = "Error: You've already requested this object!"
-            objects_requested = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.asked == True) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
-            return dict(form=form, no_of_objects = len(objects), objects_requested = objects_requested, control = 'ask')
+            if trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing:
+                objects = db((db.have_lists.user_id == trade.UserProposed) & (db.have_lists.object_id == db.objects.id)).select()
+                form = FORM(DIV(LABEL('Select object to request:', _for='objects', _class="control-label col-sm-3"),
+                            DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
+                            _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
+                            DIV(DIV(INPUT(_class = "btn btn-default", _value='Add to request', _type="submit"),
+                            A('Send offer', _href=URL('trades', 'send', args=trade.id), _class = "btn btn-primary"),
+                            _class="col-sm-9 col-sm-offset-3"),
+                            _class="form-group"),
+                            _class="form-horizontal")
+                if form.accepts(request, session):
+                    #Ensure object not already in trade
+                    count = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.object_id == request.vars.objects)).count()
+                    if (count == 0):
+                        db.objects_in_trade.insert(object_id = request.vars.objects,
+                        trade_id = trade.id,
+                        asked = True)
+                        db.commit
+                        response.flash = 'Object successfully added to request'
+                    else:
+                        response.flash = "Error: You've already requested this object!"
+                objects_requested = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.asked == True) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
+                return dict(form=form, no_of_objects = len(objects), objects_requested = objects_requested, control = 'ask')
+            elif trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed:
+                objects = db((db.have_lists.user_id == trade.UserProposing) & (db.have_lists.object_id == db.objects.id)).select()
+                form = FORM(DIV(LABEL('Select object to request:', _for='objects', _class="control-label col-sm-3"),
+                            DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
+                            _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
+                            DIV(DIV(INPUT(_class = "btn btn-default", _value='Add to request', _type="submit"),
+                            A('Send offer', _href=URL('trades', 'send', args=trade.id), _class = "btn btn-primary"),
+                            _class="col-sm-9 col-sm-offset-3"),
+                            _class="form-group"),
+                            _class="form-horizontal")
+                if form.accepts(request, session):
+                    #Ensure object not already in trade
+                    count = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.object_id == request.vars.objects)).count()
+                    if (count == 0):
+                        db.objects_in_trade.insert(object_id = request.vars.objects,
+                        trade_id = trade.id,
+                        offered = True)
+                        db.commit
+                        response.flash = 'Object successfully added to request'
+                    else:
+                        response.flash = "Error: You've already requested this object!"
+                objects_requested = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.offered == True) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
+                return dict(form=form, no_of_objects = len(objects), objects_requested = objects_requested, control = 'ask')
         else:
             response.flash = 'Error: You can not request in this trade!'
     else:
@@ -143,7 +191,6 @@ def new():
     users = db(db.auth_user.id != auth.user.id).select()
     #my_objects = db((db.have_lists.user_id == auth.user.id) & (db.have_lists.object_id == db.objects.id)).select()
     #their_objects = db((db.have_lists.user_id == """their ID""") & (db.have_lists.object_id == db.objects.id)).select()
-
     form = FORM(
                 DIV(LABEL('User:', _for='user', _class="control-label col-sm-3"),
                     DIV(SELECT(_name='user', *[OPTION(users[i].username, _value=str(users[i].id)) for i in range(len(users))],
@@ -172,7 +219,29 @@ def new():
         UserProposed = request.vars.user
         )
         db.commit
-        session.flash = "Trade successfully created, now offer some objects!"
+        session.flash = "You are now making a trade, offer some objects!"
         #Progress to offer own items
         redirect(URL('trades', 'offer', args=[trade_id]))
     return dict(form = form)
+
+@auth.requires_login()
+def send():
+    #Retrieve trade record using ID
+    trade = db.trades(request.args(0))
+    #Check trade exists
+    if trade:
+        if trade.status == 'active':
+            if trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing:
+                trade.update_record(awaiting='proposed')
+                session.flash = "Trade successfully amended!"
+            elif trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed:
+                trade.update_record(awaiting='proposing')
+                session.flash = "Trade successfully amended!"
+        elif trade.status == 'draft':
+            if trade.UserProposing == auth.user.id:
+                trade.update_record(status='active', awaiting='proposed')
+                session.flash = "Trade successully initiated!"
+    else:
+        session.flash = 'Error: You do not have permission to do this'
+    redirect(URL('trades', 'view', args=[trade.id]))
+    return dict()
