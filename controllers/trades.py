@@ -105,7 +105,7 @@ def offer():
                     else:
                         response.flash = "Error: You've already offered this object!"
                 objects_offered = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.offered == True) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
-                return dict(form=form, no_of_objects = len(objects), objects_offered = objects_offered, control = 'offer')
+                return dict(form=form, no_of_objects = len(objects), objects_offered = objects_offered, trade_id = trade.id, control = 'offer')
             elif trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed:
                 if form.accepts(request, session):
                     #Ensure object not already in trade
@@ -119,7 +119,7 @@ def offer():
                     else:
                         response.flash = "Error: You've already offered this object!"
                 objects_offered = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.asked == True) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
-                return dict(form=form, no_of_objects = len(objects), objects_offered = objects_offered, control = 'offer')
+                return dict(form=form, no_of_objects = len(objects), objects_offered = objects_offered, trade_id = trade.id, control = 'offer')
         else:
             response.flash = 'Error: This trade is inactive!'
     else:
@@ -156,7 +156,7 @@ def ask():
                     else:
                         response.flash = "Error: You've already requested this object!"
                 objects_requested = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.asked == True) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
-                return dict(form=form, no_of_objects = len(objects), objects_requested = objects_requested, control = 'ask')
+                return dict(form=form, no_of_objects = len(objects), objects_requested = objects_requested, trade_id = trade.id, control = 'ask')
             elif trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed:
                 objects = db((db.have_lists.user_id == trade.UserProposing) & (db.have_lists.object_id == db.objects.id)).select()
                 form = FORM(DIV(LABEL('Select object to request:', _for='objects', _class="control-label col-sm-3"),
@@ -179,7 +179,7 @@ def ask():
                     else:
                         response.flash = "Error: You've already requested this object!"
                 objects_requested = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.offered == True) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
-                return dict(form=form, no_of_objects = len(objects), objects_requested = objects_requested, control = 'ask')
+                return dict(form=form, no_of_objects = len(objects), objects_requested = objects_requested, trade_id = trade.id, control = 'ask')
         else:
             response.flash = 'Error: You can not request in this trade!'
     else:
@@ -244,4 +244,40 @@ def update():
     else:
         session.flash = 'Error: You do not have permission to do this'
     redirect(URL('trades', 'view', args=[trade.id]))
+    return dict()
+
+@auth.requires_login()
+def offer_remove():
+    trade = db.trades(request.args(0))
+    obj = db.objects(request.args(1))
+    if (trade and obj):
+        if (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing) or (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed):
+            #Delete the link
+            db((db.objects_in_trade.object_id == obj.id) & (db.objects_in_trade.trade_id == trade.id)).delete()
+            session.flash = "'" + obj.name + "' successfully removed"
+            redirect(URL('trades', 'offer', args=[trade.id]))
+        else:
+            session.flash = "Error: You don't have permission to remove this"
+            redirect(URL('trades', 'view', args=[trade.id]))
+    else:
+        session.flash = "Error: Invalid trade or object selected"
+        redirect(URL('trades', 'index'))
+    return dict()
+
+@auth.requires_login()
+def ask_remove():
+    trade = db.trades(request.args(0))
+    obj = db.objects(request.args(1))
+    if (trade and obj):
+        if (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing) or (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed):
+            #Delete the link
+            db((db.objects_in_trade.object_id == obj.id) & (db.objects_in_trade.trade_id == trade.id)).delete()
+            session.flash = "'" + obj.name + "' successfully removed"
+            redirect(URL('trades', 'ask', args=[trade.id]))
+        else:
+            session.flash = "Error: You don't have permission to remove this"
+            redirect(URL('trades', 'view', args=[trade.id]))
+    else:
+        session.flash = "Error: Invalid trade or object selected"
+        redirect(URL('trades', 'index'))
     return dict()
