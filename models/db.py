@@ -110,7 +110,7 @@ db.define_table('trades',
                 Field('UserProposed', db.auth_user), # User being proposed to
                 Field('date', default=datetime.date.today()),   # adds current date by default
                 Field('status', requires=IS_IN_SET(status), default=status[0]),
-                Field('awaiting', requires=IS_IN_SET(['proposed', 'proposing']), default='proposing', writable=False, readable=False))
+                Field('awaiting', requires=IS_IN_SET(['proposed', 'proposing']), default='proposing'))
 
 # Objects in Trade Table: stores relation between objects and the trades they are in
 db.define_table('objects_in_trade',

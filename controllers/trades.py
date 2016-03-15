@@ -140,7 +140,7 @@ def ask():
                             DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
                             _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
                             DIV(DIV(INPUT(_class = "btn btn-default", _value='Add to request', _type="submit"),
-                            A('Send offer', _href=URL('trades', 'send', args=trade.id), _class = "btn btn-primary"),
+                            A('Send offer', _href=URL('trades', 'update', args=trade.id), _class = "btn btn-primary"),
                             _class="col-sm-9 col-sm-offset-3"),
                             _class="form-group"),
                             _class="form-horizontal")
@@ -163,7 +163,7 @@ def ask():
                             DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
                             _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
                             DIV(DIV(INPUT(_class = "btn btn-default", _value='Add to request', _type="submit"),
-                            A('Send offer', _href=URL('trades', 'send', args=trade.id), _class = "btn btn-primary"),
+                            A('Send offer', _href=URL('trades', 'update', args=trade.id), _class = "btn btn-primary"),
                             _class="col-sm-9 col-sm-offset-3"),
                             _class="form-group"),
                             _class="form-horizontal")
@@ -225,7 +225,7 @@ def new():
     return dict(form = form)
 
 @auth.requires_login()
-def send():
+def update():
     #Retrieve trade record using ID
     trade = db.trades(request.args(0))
     #Check trade exists
