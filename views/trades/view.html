@@ -59,7 +59,7 @@
 
 <div class="col-md-5">
 
-    {{if trade.status == 'active':}}
+    {{if (trade.status == 'active') and (auth.user.id == trade.UserProposed):}}
         {{=form}}
     {{elif trade.status == 'accepted':}}
         <div class="alert alert-info alert-dismissible" role="alert">

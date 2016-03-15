@@ -36,7 +36,7 @@ def view():
                 theirObjects += db(object.object_id == db.objects.id).select()
             else:
                 yourObjects += db(object.object_id == db.objects.id).select()
-    if trade.status == 'active':
+    if (trade.status == 'active') and (auth.user.id == trade.UserProposed):
         form = FORM(DIV(DIV(INPUT(_class = "btn btn-success", _value='Accept Trade', _type="submit"),
                     A('Amend Offer', _href=URL('trades', 'offer', args=trade_id), _class = "btn btn-primary"),
                 _class="col-sm-9 col-sm-offset-3"),
