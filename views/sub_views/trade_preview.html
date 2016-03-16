@@ -1,14 +1,28 @@
 <div class="col-sm-5 col-md-6">
   <div class="thumbnail">
-    {{if trade.trades.status != 'accepted':}}
-      <a href="{{=URL('trades','view', args=[trade.trades.id])}}">
-        <h4 style="text-align:center">{{=trade.auth_user.username}}
-            on {{=trade.trades.date}}
-        </h4>
-      </a>
+    {{if trade.trades.status == 'accepted':}}
+    <h4 style="text-align:center">{{=trade.auth_user.username}}
+        on {{=trade.trades.date}}
+    </h4>
+    <center>
+      <span class="label label-success">
+        Accepted by
+        {{if (trade.trades.awaiting == 'proposed' and trade.trades.UserProposed == auth.user.id) or (trade.trades.awaiting == 'proposing' and trade.trades.UserProposing == auth.user.id):}}
+        you
+        {{else:}}
+        them
+        {{pass}}
+      </span>
+    </center>
+    {{else:}}
+    <a href="{{=URL('trades','view', args=[trade.trades.id])}}">
+      <h4 style="text-align:center">{{=trade.auth_user.username}}
+          on {{=trade.trades.date}}
+      </h4>
+    </a>
+    <center>
       {{if trade.trades.status == 'active':}}
-      <center>
-        <span class="label label-default">
+        <span class="label label-primary">
           Awaiting
           {{if (trade.trades.awaiting == 'proposed' and trade.trades.UserProposed == auth.user.id) or (trade.trades.awaiting == 'proposing' and trade.trades.UserProposing == auth.user.id):}}
           your response
@@ -16,12 +30,17 @@
           their response
           {{pass}}
         </span>
-      </center>
-      {{pass}}
-    {{else:}}
-      <h4 style="text-align:center">{{=trade.auth_user.username}}
-          on {{=trade.trades.date}}
-      </h4>
+        {{elif trade.trades.status == 'rejected':}}
+        <span class="label label-danger">
+          Rejected by
+          {{if (trade.trades.awaiting == 'proposed' and trade.trades.UserProposed == auth.user.id) or (trade.trades.awaiting == 'proposing' and trade.trades.UserProposing == auth.user.id):}}
+          you
+          {{else:}}
+          them
+          {{pass}}
+        </span>
+        {{pass}}
+    </center>
     {{pass}}
   </div>
 </div>
