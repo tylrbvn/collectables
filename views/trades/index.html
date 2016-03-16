@@ -11,114 +11,103 @@
   </div>
 </div>
 
-<div class="col-md-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h2>Trades you've proposed</h2>
-      </div>
-      <div class="panel-body">
-        Here are trades that you've made to other people
-      </div>
+<div class="container">
+    <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#A" data-toggle="tab">Active trades</a></li>
+        <li class="nav"><a href="#B" data-toggle="tab">Accepted trades</a></li>
+        <li class="nav"><a href="#C" data-toggle="tab">Rejected trades</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="A">
+          <h4>You proposed:</h4>
+          <div class="row">
+            {{if len(userActiveTrades)>0:}}
+                {{for trade in userActiveTrades:}}
+                  {{include 'sub_views/trade_preview.html'}}
+                {{pass}}
+            {{else:}}
+                <div class="col-sm-5 col-md-6">
+                    <div class="alert alert-info" role="alert">
+                        <strong>You don't have any active trades.</strong>
+                    </div>
+                </div>
+            {{pass}}
+          </div>
+          <h4>Proposed to you:</h4>
+          <div class="row">
+            {{if len(offeredActiveTrades)>0:}}
+                {{for trade in offeredActiveTrades:}}
+                  {{include 'sub_views/trade_preview.html'}}
+                {{pass}}
+            {{else:}}
+                <div class="col-sm-5 col-md-6">
+                    <div class="alert alert-info" role="alert">
+                        <strong>You don't have any active trades.</strong>
+                    </div>
+                </div>
+            {{pass}}
+          </div>
+        </div>
+        <div class="tab-pane fade" id="B">
+        <h4>You proposed:</h4>
+          <div class="row">
+            {{if len(userAcceptedTrades)>0:}}
+                {{for trade in userAcceptedTrades:}}
+                  {{include 'sub_views/trade_preview.html'}}
+                {{pass}}
+            {{else:}}
+                <div class="col-sm-5 col-md-6">
+                    <div class="alert alert-info" role="alert">
+                        <strong>You don't have any accepted trades.</strong>
+                    </div>
+                </div>
+            {{pass}}
+          </div>
+          <div class="row">
+            {{if len(offeredAcceptedTrades)>0:}}
+                {{for trade in offeredAcceptedTrades:}}
+                  {{include 'sub_views/trade_preview.html'}}
+                {{pass}}
+            {{else:}}
+                <div class="col-sm-5 col-md-6">
+                    <div class="alert alert-info" role="alert">
+                        <strong>You don't have any accepted trades.</strong>
+                    </div>
+                </div>
+            {{pass}}
+          </div>
+        </div>
+        <div class="tab-pane fade" id="C">
+          <h4>You proposed:</h4>
+          <div class="row">
+            {{if len(userrejectedTrades)>0:}}
+                {{for trade in userrejectedTrades:}}
+                  {{include 'sub_views/trade_preview.html'}}
+                {{pass}}
+            {{else:}}
+                <div class="col-sm-5 col-md-6">
+                    <div class="alert alert-info" role="alert">
+                        <strong>You don't have any rejected trades.</strong>
+                    </div>
+                </div>
+            {{pass}}
+          </div>
+          <h4>Proposed to you:</h4>
+          <div class="row">
+            {{if len(offeredRejectedTrades)>0:}}
+                {{for trade in offeredRejectedTrades:}}
+                  {{include 'sub_views/trade_preview.html'}}
+                {{pass}}
+            {{else:}}
+                <div class="col-sm-5 col-md-6">
+                    <div class="alert alert-info" role="alert">
+                        <strong>You don't have any rejected trades.</strong>
+                    </div>
+                </div>
+            {{pass}}
+          </div>
+        </div>
     </div>
-<!--Check that user has trades-->
-  <h4>Active Trades:</h4>
-  <div class="row">
-    {{if len(userActiveTrades)>0:}}
-        {{for trade in userActiveTrades:}}
-          {{include 'sub_views/trade_preview.html'}}
-        {{pass}}
-    {{else:}}
-        <div class="col-sm-5 col-md-6">
-            <div class="alert alert-info" role="alert">
-                <strong>You don't have any active trades.</strong>
-            </div>
-        </div>
-    {{pass}}
-  </div>
-
-  <h4>Accepted Trades:</h4>
-  <div class="row">
-    {{if len(userAcceptedTrades)>0:}}
-        {{for trade in userAcceptedTrades:}}
-          {{include 'sub_views/trade_preview.html'}}
-        {{pass}}
-    {{else:}}
-        <div class="col-sm-5 col-md-6">
-            <div class="alert alert-info" role="alert">
-                <strong>You don't have any accepted trades.</strong>
-            </div>
-        </div>
-    {{pass}}
-  </div>
-
-  <h4> Rejected Trades:</h4>
-  <div class="row">
-    {{if len(userrejectedTrades)>0:}}
-        {{for trade in userrejectedTrades:}}
-          {{include 'sub_views/trade_preview.html'}}
-        {{pass}}
-    {{else:}}
-        <div class="col-sm-5 col-md-6">
-            <div class="alert alert-info" role="alert">
-                <strong>You don't have any rejected trades.</strong>
-            </div>
-        </div>
-    {{pass}}
-  </div>
-  </div>
-
-<div class="col-md-6">
-  <div class="panel panel-default">
-      <div class="panel-heading">
-        <h2>Trades proposed to you</h2>
-      </div>
-      <div class="panel-body">
-        Here are trades that other people have made to you
-      </div>
-    </div>
-  <h4>Active Trades:</h4>
-  <div class="row">
-    {{if len(offeredActiveTrades)>0:}}
-        {{for trade in offeredActiveTrades:}}
-          {{include 'sub_views/trade_preview.html'}}
-        {{pass}}
-    {{else:}}
-        <div class="col-sm-5 col-md-6">
-            <div class="alert alert-info" role="alert">
-                <strong>You don't have any active trades.</strong>
-            </div>
-        </div>
-    {{pass}}
-  </div>
-
-  <h4>Accepted Trades:</h4>
-  <div class="row">
-    {{if len(offeredAcceptedTrades)>0:}}
-        {{for trade in offeredAcceptedTrades:}}
-          {{include 'sub_views/trade_preview.html'}}
-        {{pass}}
-    {{else:}}
-        <div class="col-sm-5 col-md-6">
-            <div class="alert alert-info" role="alert">
-                <strong>You don't have any accepted trades.</strong>
-            </div>
-        </div>
-    {{pass}}
-  </div>
-
-  <h4> Rejected Trades:</h4>
-  <div class="row">
-    {{if len(offeredRejectedTrades)>0:}}
-        {{for trade in offeredRejectedTrades:}}
-          {{include 'sub_views/trade_preview.html'}}
-        {{pass}}
-    {{else:}}
-        <div class="col-sm-5 col-md-6">
-            <div class="alert alert-info" role="alert">
-                <strong>You don't have any rejected trades.</strong>
-            </div>
-        </div>
-    {{pass}}
-  </div>
-  </div>
 </div>
