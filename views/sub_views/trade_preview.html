@@ -14,6 +14,17 @@
         {{pass}}
       </span>
     </center>
+    {{elif trade.trades.status == 'draft':}}
+    <a href="{{=URL('trades','offer', args=[trade.trades.id])}}">
+      <h4 style="text-align:center">{{=trade.auth_user.username}}
+          drafted on {{=trade.trades.date}}
+      </h4>
+    </a>
+    <center>
+      <span class="label label-warning">
+        You have not sent this trade yet
+      </span>
+    </center>
     {{else:}}
     <a href="{{=URL('trades','view', args=[trade.trades.id])}}">
       <h4 style="text-align:center">{{=trade.auth_user.username}}
@@ -22,23 +33,23 @@
     </a>
     <center>
       {{if trade.trades.status == 'active':}}
-        <span class="label label-primary">
-          Awaiting
-          {{if (trade.trades.awaiting == 'proposed' and trade.trades.UserProposed == auth.user.id) or (trade.trades.awaiting == 'proposing' and trade.trades.UserProposing == auth.user.id):}}
-          your response
-          {{else:}}
-          their response
-          {{pass}}
-        </span>
+          <span class="label label-primary">
+            Awaiting
+            {{if (trade.trades.awaiting == 'proposed' and trade.trades.UserProposed == auth.user.id) or (trade.trades.awaiting == 'proposing' and trade.trades.UserProposing == auth.user.id):}}
+            your response
+            {{else:}}
+            their response
+            {{pass}}
+          </span>
         {{elif trade.trades.status == 'rejected':}}
-        <span class="label label-danger">
-          Rejected by
-          {{if (trade.trades.awaiting == 'proposed' and trade.trades.UserProposed == auth.user.id) or (trade.trades.awaiting == 'proposing' and trade.trades.UserProposing == auth.user.id):}}
-          you
-          {{else:}}
-          them
-          {{pass}}
-        </span>
+          <span class="label label-danger">
+            Rejected by
+            {{if (trade.trades.awaiting == 'proposed' and trade.trades.UserProposed == auth.user.id) or (trade.trades.awaiting == 'proposing' and trade.trades.UserProposing == auth.user.id):}}
+            you
+            {{else:}}
+            them
+            {{pass}}
+          </span>
         {{pass}}
     </center>
     {{pass}}

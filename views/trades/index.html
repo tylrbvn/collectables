@@ -16,6 +16,7 @@
         <li class="nav active"><a href="#A" data-toggle="tab">Active trades</a></li>
         <li class="nav"><a href="#B" data-toggle="tab">Accepted trades</a></li>
         <li class="nav"><a href="#C" data-toggle="tab">Rejected trades</a></li>
+        <li class="nav"><a href="#D" data-toggle="tab">Draft trades</a></li>
     </ul>
 
     <!-- Tab panes -->
@@ -51,7 +52,7 @@
           </div>
         </div>
         <div class="tab-pane fade" id="B">
-        <h4>You proposed:</h4>
+          <h4>You proposed:</h4>
           <div class="row">
             {{if len(userAcceptedTrades)>0:}}
                 {{for trade in userAcceptedTrades:}}
@@ -65,6 +66,7 @@
                 </div>
             {{pass}}
           </div>
+          <h4>Proposed to you:</h4>
           <div class="row">
             {{if len(offeredAcceptedTrades)>0:}}
                 {{for trade in offeredAcceptedTrades:}}
@@ -104,6 +106,22 @@
                 <div class="col-sm-5 col-md-6">
                     <div class="alert alert-info" role="alert">
                         <strong>You don't have any rejected trades.</strong>
+                    </div>
+                </div>
+            {{pass}}
+          </div>
+        </div>
+        <div class="tab-pane fade" id="D">
+          <h4>Draft trades:</h4>
+          <div class="row">
+            {{if len(userDraftTrades)>0:}}
+                {{for trade in userDraftTrades:}}
+                  {{include 'sub_views/trade_preview.html'}}
+                {{pass}}
+            {{else:}}
+                <div class="col-sm-5 col-md-6">
+                    <div class="alert alert-info" role="alert">
+                        <strong>You don't have any draft trades.</strong>
                     </div>
                 </div>
             {{pass}}
