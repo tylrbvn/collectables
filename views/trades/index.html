@@ -24,15 +24,8 @@
   <h4>Active Trades:</h4>
   <div class="row">
     {{if len(userActiveTrades)>0:}}
-        {{for activeTrades in userActiveTrades:}}
-            <div class="col-sm-5 col-md-6">
-              <div class="thumbnail">
-                <a href="{{=URL('trades','view', args=[activeTrades.trades.id])}}">
-                  <h4 style="text-align:center">{{=activeTrades.auth_user.username}}
-                      on {{=activeTrades.trades.date}}</h4>
-                </a>
-              </div>
-            </div>
+        {{for trade in userActiveTrades:}}
+          {{include 'sub_views/trade_preview.html'}}
         {{pass}}
     {{else:}}
         <div class="col-sm-5 col-md-6">
@@ -46,15 +39,8 @@
   <h4>Accepted Trades:</h4>
   <div class="row">
     {{if len(userAcceptedTrades)>0:}}
-        {{for acceptedTrades in userAcceptedTrades:}}
-            <div class="col-sm-5 col-md-6">
-              <div class="thumbnail">
-                <a href="{{=URL('trades','view', args=[acceptedTrades.trades.id])}}">
-                  <h4 style="text-align:center">{{=acceptedTrades.auth_user.username}}
-                      on {{=acceptedTrades.trades.date}}</h4>
-                </a>
-              </div>
-            </div>
+        {{for trade in userAcceptedTrades:}}
+          {{include 'sub_views/trade_preview.html'}}
         {{pass}}
     {{else:}}
         <div class="col-sm-5 col-md-6">
@@ -68,15 +54,8 @@
   <h4> Rejected Trades:</h4>
   <div class="row">
     {{if len(userrejectedTrades)>0:}}
-        {{for rejectedTrades in userrejectedTrades:}}
-            <div class="col-sm-5 col-md-6">
-              <div class="thumbnail">
-                <a href="{{=URL('trades','view', args=[rejectedTrades.trades.id])}}">
-                  <h4 style="text-align:center">{{=rejectedTrades.auth_user.username}}
-                      on {{=rejectedTrades.trades.date}}</h4>
-                </a>
-              </div>
-            </div>
+        {{for trade in userrejectedTrades:}}
+          {{include 'sub_views/trade_preview.html'}}
         {{pass}}
     {{else:}}
         <div class="col-sm-5 col-md-6">
@@ -100,15 +79,8 @@
   <h4>Active Trades:</h4>
   <div class="row">
     {{if len(offeredActiveTrades)>0:}}
-        {{for activeTrades in offeredActiveTrades:}}
-            <div class="col-sm-5 col-md-6">
-              <div class="thumbnail">
-                <a href="{{=URL('trades','view', args=[activeTrades.trades.id])}}">
-                  <h4 style="text-align:center">{{=activeTrades.auth_user.username}}
-                      on {{=activeTrades.trades.date}}</h4>
-                </a>
-              </div>
-            </div>
+        {{for trade in offeredActiveTrades:}}
+          {{include 'sub_views/trade_preview.html'}}
         {{pass}}
     {{else:}}
         <div class="col-sm-5 col-md-6">
@@ -122,15 +94,8 @@
   <h4>Accepted Trades:</h4>
   <div class="row">
     {{if len(offeredAcceptedTrades)>0:}}
-        {{for acceptedTrades in offeredAcceptedTrades:}}
-            <div class="col-sm-5 col-md-6">
-              <div class="thumbnail">
-                <a href="{{=URL('trades','view', args=[acceptedTrades.trades.id])}}">
-                  <h4 style="text-align:center">{{=acceptedTrades.auth_user.username}}
-                      on {{=acceptedTrades.trades.date}}</h4>
-                </a>
-              </div>
-            </div>
+        {{for trade in offeredAcceptedTrades:}}
+          {{include 'sub_views/trade_preview.html'}}
         {{pass}}
     {{else:}}
         <div class="col-sm-5 col-md-6">
@@ -144,15 +109,8 @@
   <h4> Rejected Trades:</h4>
   <div class="row">
     {{if len(offeredRejectedTrades)>0:}}
-        {{for rejectedTrades in offeredRejectedTrades:}}
-            <div class="col-sm-5 col-md-6">
-              <div class="thumbnail">
-                <a href="{{=URL('trades','view', args=[rejectedTrades.trades.id])}}">
-                  <h4 style="text-align:center">{{=rejectedTrades.auth_user.username}}
-                      on {{=rejectedTrades.trades.date}}</h4>
-                </a>
-              </div>
-            </div>
+        {{for trade in offeredRejectedTrades:}}
+          {{include 'sub_views/trade_preview.html'}}
         {{pass}}
     {{else:}}
         <div class="col-sm-5 col-md-6">
