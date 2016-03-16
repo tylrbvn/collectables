@@ -42,35 +42,35 @@ def view():
                     trade.update_record(status='accepted')
                     if trade.UserProposing == auth.user.id: #If this is a trade that we proposed
                         for yourObject in yourObjects:
-                            db.objects.insert(name = yourObject.name,
-                            type = yourObject.type,
-                            story = yourObject.story,
-                            value = yourObject.value,
+                            db.objects.insert(name = yourObject.objects.name,
+                            type = yourObject.objects.type,
+                            story = yourObject.objects.story,
+                            value = yourObject.objects.value,
                             user_id = trade.UserProposed)
-                            yourObject.delete_record()
+                            yourObject.objects.delete_record()
                         for theirObject in theirObjects:
-                            db.objects.insert(name = theirObject.name,
-                            type = theirObject.type,
-                            story = theirObject.story,
-                            value = theirObject.value,
+                            db.objects.insert(name = theirObject.objects.name,
+                            type = theirObject.objects.type,
+                            story = theirObject.objects.story,
+                            value = theirObject.objects.value,
                             user_id = trade.UserProposing)
-                            theirObject.delete_record()
+                            theirObject.objects.delete_record()
                         db.commit()
                     else:
                         for yourObject in yourObjects:
-                            db.objects.insert(name = yourObject.name,
-                            type = yourObject.type,
-                            story = yourObject.story,
-                            value = yourObject.value,
+                            db.objects.insert(name = yourObject.objects.name,
+                            type = yourObject.objects.type,
+                            story = yourObject.objects.story,
+                            value = yourObject.objects.value,
                             user_id = trade.UserProposing)
-                            yourObject.delete_record()
+                            yourObject.objects.delete_record()
                         for theirObject in theirObjects:
-                            db.objects.insert(name = theirObject.name,
-                            type = theirObject.type,
-                            story = theirObject.story,
-                            value = theirObject.value,
+                            db.objects.insert(name = theirObject.objects.name,
+                            type = theirObject.objects.type,
+                            story = theirObject.objects.story,
+                            value = theirObject.objects.value,
                             user_id = trade.UserProposed)
-                            theirObject.delete_record()
+                            theirObject.objects.delete_record()
                         db.commit()
                     session.flash = "Trade successfully accepted, your objects have been exchanged!"
                     #Progress to offer own items
