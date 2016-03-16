@@ -3,14 +3,14 @@
     <span style="font-size:3em" class="glyphicon glyphicon-random" aria-hidden="true"></span>
     {{if trade.trades.status == 'accepted':}}
     <h4>Trade with {{=trade.auth_user.username}}</h4>
-    <span class="label label-default">Created at {{=trade.trades.date.strftime('%H:%M %d.%m.%y')}}</span>
+    <span class="label label-default">Created by {{if trade.trades.UserProposing == auth.user.id:}}you{{else:}}{{=trade.auth_user.username}}{{pass}} at {{=trade.trades.date.strftime('%H:%M %d.%m.%y')}}</span>
     </br>
     <span class="label label-success">
       Accepted by
       {{if (trade.trades.awaiting == 'proposed' and trade.trades.UserProposed == auth.user.id) or (trade.trades.awaiting == 'proposing' and trade.trades.UserProposing == auth.user.id):}}
       you
       {{else:}}
-      them
+      {{=trade.auth_user.username}}
       {{pass}}
     </span>
     {{elif trade.trades.status == 'draft':}}
@@ -26,7 +26,7 @@
     <a href="{{=URL('trades','view', args=[trade.trades.id])}}">
       <h4>Trade with {{=trade.auth_user.username}}</h4>
     </a>
-    <span class="label label-default">Created at {{=trade.trades.date.strftime('%H:%M %d.%m.%y')}}</span>
+    <span class="label label-default">Created by {{if trade.trades.UserProposing == auth.user.id:}}you{{else:}}{{=trade.auth_user.username}}{{pass}} at {{=trade.trades.date.strftime('%H:%M %d.%m.%y')}}</span>
     </br>
     {{if trade.trades.status == 'active':}}
         <span class="label label-primary">
@@ -43,7 +43,7 @@
           {{if (trade.trades.awaiting == 'proposed' and trade.trades.UserProposed == auth.user.id) or (trade.trades.awaiting == 'proposing' and trade.trades.UserProposing == auth.user.id):}}
           you
           {{else:}}
-          them
+          {{=trade.auth_user.username}}
           {{pass}}
         </span>
       {{pass}}

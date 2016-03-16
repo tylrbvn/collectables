@@ -86,7 +86,7 @@ def view():
                         user_id = trade.UserProposed)
                         theirObject.delete_record()
                     db.commit()
-                session.flash = "Trade Completed! Enjoy your new items!"
+                session.flash = "Trade successfully accepted, your objects have been exchanged!"
                 #Progress to offer own items
                 redirect(URL('trades', 'index'))
             return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects, form=form)
