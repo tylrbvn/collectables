@@ -53,18 +53,38 @@ def view():
             if form.accepts(request, session):
                 #update trade to be accepted
                 trade.update_record(status='accepted')
-                #TODO: Make sure swapped objects are removed from have lists, collections, trades etc, may be better to delete and make new object
                 if trade.UserProposing == auth.user.id: #If this is a trade that we proposed
                     for yourObject in yourObjects:
-                        yourObject.update_record(user_id=trade.UserProposed) #object user id is now the user we proposed to
+                        db.objects.insert(name = yourObject.name,
+                        type = yourObject.type,
+                        story = yourObject.story,
+                        value = yourObject.value,
+                        user_id = trade.UserProposed)
+                        yourObject.delete_record()
                     for theirObject in theirObjects:
-                        theirObject.update_record(user_id=trade.UserProposing) #their objects are ours
+                        db.objects.insert(name = theirObject.name,
+                        type = theirObject.type,
+                        story = theirObject.story,
+                        value = theirObject.value,
+                        user_id = trade.UserProposing)
+                        theirObject.delete_record()
+                    db.commit()
                 else:
                     for yourObject in yourObjects:
-                        yourObject.update_record(user_id=trade.UserProposing) #object user id is now the user proposing
+                        db.objects.insert(name = yourObject.name,
+                        type = yourObject.type,
+                        story = yourObject.story,
+                        value = yourObject.value,
+                        user_id = trade.UserProposing)
+                        yourObject.delete_record()
                     for theirObject in theirObjects:
-                        theirObject.update_record(user_id=trade.UserProposed) #their objects are ours
-
+                        db.objects.insert(name = theirObject.name,
+                        type = theirObject.type,
+                        story = theirObject.story,
+                        value = theirObject.value,
+                        user_id = trade.UserProposed)
+                        theirObject.delete_record()
+                    db.commit()
                 session.flash = "Trade Completed! Enjoy your new items!"
                 #Progress to offer own items
                 redirect(URL('trades', 'index'))
