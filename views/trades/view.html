@@ -7,75 +7,61 @@
 <!--Title and description-->
 <div class="panel panel-default">
   <div class="panel-heading">
-    <!-- determine who is the other user depending on who proposed the trade (TODO: this shit is messy)-->
-    {{if trade.UserProposed==auth.user_id:}}
-        {{otherUser=(db(trade.UserProposing == db.auth_user.id).select().first())}}
-        <h1>Trade Between You and {{=otherUser.username}}</h1>
-    {{else:}}
-        {{otherUser=(db(trade.UserProposed == db.auth_user.id).select().first())}}
-        <h1>Trade Between You and {{=otherUser.username}}</h1>
+    <h1>Trade with {{=partner.username}}</h1>
+  </div>
+  <div class="panel-body">
+    <h4><span class="label label-default">Created by {{if trade.UserProposing == auth.user.id:}}you{{else:}}{{=partner.username}}{{pass}} at {{=trade.date.strftime('%H:%M %d.%m.%y')}}</span></h4>
+    {{if trade.status == 'active':}}
+      {{if (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed) or (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing):}}
+        </br>{{=form}}
+      {{else:}}
+        <h4>
+          <span class="label label-primary">Awaiting their response</span>
+        </h4>
+      {{pass}}
+    {{elif trade.status == 'rejected':}}
+        <h4>
+          <span class="label label-danger">
+            Rejected by
+            {{if (trade.awaiting == 'proposed' and trade.UserProposed == auth.user.id) or (trade.awaiting == 'proposing' and trade.UserProposing == auth.user.id):}}
+            you
+            {{else:}}
+              {{=partner.username}}
+            {{pass}}
+          </span>
+        </h4>
     {{pass}}
   </div>
 </div>
 
-<div class="col-md-5">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4>Your Objects:</h4>
-        </div>
-        <div class="panel-body">
-            {{for yourObject in yourObjects:}}
-                <div class="col-sm-6 col-md-3">
-                        <a href="{{=URL('object','view', args=[yourObject.id])}}">
-                            <h4 style="text-align:center"> {{=yourObject.name}}</h4>
-                        </a>
-                </div>
-            {{pass}}
-        </div>
-    </div>
-</div>
-
-<div class="col-md-1">
-    <span style="font-size:4em" class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>
-</div>
-
-
-<div class="col-md-5">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4>{{=otherUser.username}} Objects:</h4>
-        </div>
-        <div class="panel-body">
-            {{for theirObject in theirObjects:}}
-                <div class="col-sm-6 col-md-3">
-                        <a href="{{=URL('object','view', args=[theirObject.id])}}">
-                            <h4 style="text-align:center"> {{=theirObject.name}}</h4>
-                        </a>
-                </div>
-            {{pass}}
-        </div>
-    </div>
-</div>
-
-<div class="col-md-5">
-    {{if trade.status == 'active':}}
-      {{if (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed) or (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing):}}
-          {{=form}}
-      {{else:}}
-        <div class="alert alert-info alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong>Awaiting a response from your trading partner</strong>
-        </div>
-      {{pass}}
-    {{elif trade.status == 'accepted':}}
-        <div class="alert alert-info alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong>Trade was accepted</strong>
-        </div>
-    {{elif trade.status == 'rejected':}}
-        <div class="alert alert-info alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <strong>Trade was rejected</strong>
-        </div>
+<h3>Your objects:</h3>
+{{if len(yourObjects) > 0:}}
+  <div class="row">
+    {{for objects in yourObjects:}}
+      {{include 'sub_views/object_preview.html'}}
     {{pass}}
-</div>
+  </div>
+{{else:}}
+  <div class="alert alert-danger" role="alert">
+    <strong>You have not offered any objects in this trade.</strong>
+  </div>
+{{pass}}
+
+<center>
+  <div class="row">
+      <span style="font-size:5em" class="glyphicon glyphicon-sort" aria-hidden="true"></span>
+  </div>
+</center>
+
+<h3>{{=partner.username}}'s objects:</h3>
+{{if len(theirObjects) > 0:}}
+  <div class="row">
+    {{for objects in theirObjects:}}
+      {{include 'sub_views/object_preview.html'}}
+    {{pass}}
+  </div>
+{{else:}}
+  <div class="alert alert-danger" role="alert">
+    <strong>{{=partner.username}} has not offered any objects in this trade.</strong>
+  </div>
+{{pass}}

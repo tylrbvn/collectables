@@ -23,75 +23,65 @@ def index():
 def view():
     trade = db.trades(request.args(0))  #We need to find who proposed to trade to determine whose objects are whose
     if trade:
-        objects_in_trade = db(trade.id == db.objects_in_trade.trade_id).select()
-        yourObjects = []
-        theirObjects = []
-        if trade.UserProposing == auth.user.id: #If this is a trade that we proposed
-            for object in objects_in_trade:
-                if object.offered == True:
-                    yourObjects += db(object.object_id == db.objects.id).select()
-                else:
-                    theirObjects += db(object.object_id == db.objects.id).select()
-        elif trade.UserProposed == auth.user.id: #This is a trade that is being proposed to us
-            for object in objects_in_trade:
-                if object.offered == True:
-                    theirObjects += db(object.object_id == db.objects.id).select()
-                else:
-                    yourObjects += db(object.object_id == db.objects.id).select()
+        if trade.UserProposing == auth.user.id or trade.UserProposed == auth.user.id: #If we are involved in the trade
+            yourObjects = db((trade.id == db.objects_in_trade.trade_id) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == auth.user.id) & (db.objects.user_id == db.auth_user.id)).select()
+            theirObjects = db((trade.id == db.objects_in_trade.trade_id) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id != auth.user.id) & (db.objects.user_id == db.auth_user.id)).select()
+            if trade.UserProposed==auth.user_id:
+                partner = db.auth_user(trade.UserProposing)
+            else:
+                partner = db.auth_user(trade.UserProposed)
+            if (trade.status == 'active') and (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed) or (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing):
+                form = FORM(INPUT(_class = "btn btn-success", _value='Accept offer', _type="submit"),
+                            A('Counter offer', _href=URL('trades', 'offer', args=trade.id), _class = "btn btn-primary"),
+                            A('Reject offer', _href=URL('trades', 'reject', args=trade.id), _class = "btn btn-danger"),
+                        _class="form-horizontal")
+
+                #If the user accepts the trade, switch object id's of users in trade.
+                if form.accepts(request, session):
+                    #update trade to be accepted
+                    trade.update_record(status='accepted')
+                    if trade.UserProposing == auth.user.id: #If this is a trade that we proposed
+                        for yourObject in yourObjects:
+                            db.objects.insert(name = yourObject.name,
+                            type = yourObject.type,
+                            story = yourObject.story,
+                            value = yourObject.value,
+                            user_id = trade.UserProposed)
+                            yourObject.delete_record()
+                        for theirObject in theirObjects:
+                            db.objects.insert(name = theirObject.name,
+                            type = theirObject.type,
+                            story = theirObject.story,
+                            value = theirObject.value,
+                            user_id = trade.UserProposing)
+                            theirObject.delete_record()
+                        db.commit()
+                    else:
+                        for yourObject in yourObjects:
+                            db.objects.insert(name = yourObject.name,
+                            type = yourObject.type,
+                            story = yourObject.story,
+                            value = yourObject.value,
+                            user_id = trade.UserProposing)
+                            yourObject.delete_record()
+                        for theirObject in theirObjects:
+                            db.objects.insert(name = theirObject.name,
+                            type = theirObject.type,
+                            story = theirObject.story,
+                            value = theirObject.value,
+                            user_id = trade.UserProposed)
+                            theirObject.delete_record()
+                        db.commit()
+                    session.flash = "Trade successfully accepted, your objects have been exchanged!"
+                    #Progress to offer own items
+                    redirect(URL('trades', 'index'))
+                return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects, partner = partner, form=form,  control='trade')
+            else:
+                return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects, partner = partner, control='trade')
         else:
             #If the user
             session.flash = "Error: You do not have permission to view this trade"
             redirect(URL('trades', 'index'))
-        if (trade.status == 'active') and (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed) or (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing):
-            form = FORM(DIV(DIV(INPUT(_class = "btn btn-success", _value='Accept offer', _type="submit"),
-                        A('Counter offer', _href=URL('trades', 'offer', args=trade.id), _class = "btn btn-primary"),
-                        A('Reject offer', _href=URL('trades', 'reject', args=trade.id), _class = "btn btn-danger"),
-                    _class="col-sm-9 col-sm-offset-3"),
-                    _class="form-group"),
-                    _class="form-horizontal")
-
-            #If the user accepts the trade, switch object id's of users in trade.
-            if form.accepts(request, session):
-                #update trade to be accepted
-                trade.update_record(status='accepted')
-                if trade.UserProposing == auth.user.id: #If this is a trade that we proposed
-                    for yourObject in yourObjects:
-                        db.objects.insert(name = yourObject.name,
-                        type = yourObject.type,
-                        story = yourObject.story,
-                        value = yourObject.value,
-                        user_id = trade.UserProposed)
-                        yourObject.delete_record()
-                    for theirObject in theirObjects:
-                        db.objects.insert(name = theirObject.name,
-                        type = theirObject.type,
-                        story = theirObject.story,
-                        value = theirObject.value,
-                        user_id = trade.UserProposing)
-                        theirObject.delete_record()
-                    db.commit()
-                else:
-                    for yourObject in yourObjects:
-                        db.objects.insert(name = yourObject.name,
-                        type = yourObject.type,
-                        story = yourObject.story,
-                        value = yourObject.value,
-                        user_id = trade.UserProposing)
-                        yourObject.delete_record()
-                    for theirObject in theirObjects:
-                        db.objects.insert(name = theirObject.name,
-                        type = theirObject.type,
-                        story = theirObject.story,
-                        value = theirObject.value,
-                        user_id = trade.UserProposed)
-                        theirObject.delete_record()
-                    db.commit()
-                session.flash = "Trade successfully accepted, your objects have been exchanged!"
-                #Progress to offer own items
-                redirect(URL('trades', 'index'))
-            return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects, form=form)
-        else:
-            return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects)
     else:
         session.flash = "Error: Invalid trade ID"
         redirect(URL('trades', 'index'))
