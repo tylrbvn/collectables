@@ -18,6 +18,8 @@
   <div class="alert alert-danger" role="alert">
     <strong>The user has no objects in their have list.</strong>
   </div>
+  </br>
+  {{=A('Send offer', _href=URL('trades', 'update', args=trade_id), _class = "btn btn-primary")}}
   {{pass}}
 {{else:}}
   {{=H5("You do not have permission to add to this trade.")}}
