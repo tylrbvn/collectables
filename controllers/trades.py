@@ -43,8 +43,9 @@ def view():
             session.flash = "Error: You do not have permission to view this trade"
             redirect(URL('trades', 'index'))
         if (trade.status == 'active') and (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed) or (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing):
-            form = FORM(DIV(DIV(INPUT(_class = "btn btn-success", _value='Accept Trade', _type="submit"),
-                        A('Amend Offer', _href=URL('trades', 'offer', args=trade.id), _class = "btn btn-primary"),
+            form = FORM(DIV(DIV(INPUT(_class = "btn btn-success", _value='Accept offer', _type="submit"),
+                        A('Counter offer', _href=URL('trades', 'offer', args=trade.id), _class = "btn btn-primary"),
+                        A('Reject offer', _href=URL('trades', 'reject', args=trade.id), _class = "btn btn-danger"),
                     _class="col-sm-9 col-sm-offset-3"),
                     _class="form-group"),
                     _class="form-horizontal")
@@ -270,6 +271,21 @@ def update():
     else:
         session.flash = 'Error: You do not have permission to do this'
     redirect(URL('trades', 'view', args=[trade.id]))
+    return dict()
+
+@auth.requires_login()
+def reject():
+    #Retrieve trade record using ID
+    trade = db.trades(request.args(0))
+    #Check trade exists
+    if trade:
+        if trade.status == 'active':
+            if (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing) or (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed):
+                trade.update_record(status='rejected')
+                session.flash = "Trade rejected!"
+    else:
+        session.flash = 'Error: You do not have permission to do this'
+    redirect(URL('trades', 'index'))
     return dict()
 
 @auth.requires_login()
