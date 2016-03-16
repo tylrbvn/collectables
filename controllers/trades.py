@@ -53,6 +53,7 @@ def view():
             if form.accepts(request, session):
                 #update trade to be accepted
                 trade.update_record(status='accepted')
+                #TODO: Make sure swapped objects are removed from have lists, collections, trades etc, may be better to delete and make new object
                 if trade.UserProposing == auth.user.id: #If this is a trade that we proposed
                     for yourObject in yourObjects:
                         yourObject.update_record(user_id=trade.UserProposed) #object user id is now the user we proposed to
@@ -239,8 +240,13 @@ def update():
                 session.flash = "Trade successfully amended!"
         elif trade.status == 'draft':
             if trade.UserProposing == auth.user.id:
-                trade.update_record(status='active', awaiting='proposed')
-                session.flash = "Trade successully initiated!"
+                count = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.offered == True)).count()
+                if count > 0:
+                    trade.update_record(status='active', awaiting='proposed')
+                    session.flash = "Trade successully initiated!"
+                else:
+                    session.flash = "Error: You must offer at least one item"
+                    redirect(URL('trades', 'offer', args=[trade.id]))
     else:
         session.flash = 'Error: You do not have permission to do this'
     redirect(URL('trades', 'view', args=[trade.id]))
