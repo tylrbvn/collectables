@@ -3,6 +3,7 @@
 ## Homepage                                                            ##
 #########################################################################
 -->
+{{right_sidebar_enabled=False,('message' in globals())}}
 {{extend 'layout.html'}}
 <!--Decorative header-->
 {{block header}}
@@ -46,3 +47,27 @@
 {{else:}}
   <h4>There are no large public collections to display</h4>
 {{pass}}
+<!--Quick links sidebar for convenience-->
+{{block right_sidebar}}
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+        <span class="glyphicon glyphicon glyphicon-link"></span> Quick links
+    </h3>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+      <a href={{=URL('object','new')}}>New object</a>
+    </li>
+    <li class="list-group-item">
+      <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+      <a href={{=URL('collection','new')}}>New collection</a>
+    </li>
+    <li class="list-group-item">
+      <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+      <a href={{=URL('collection','search')}}>Search</a>
+    </li>
+  </ul>
+</div>
+{{end}}
