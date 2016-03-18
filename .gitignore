@@ -2,3 +2,7 @@ databases
 __init__.pyc
 errors
 sessions
+.idea/encodings.xml
+.idea/collectables.iml
+*.xml
+.idea/.name
