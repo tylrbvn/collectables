@@ -73,7 +73,7 @@ db.define_table('objects',
                 #Field('description', requires=IS_NOT_EMPTY(), widget=SQLFORM.widgets.text.widget), (Not in spec specifically, may wish to reinclude)
                 Field('story', widget=SQLFORM.widgets.text.widget), #Optional as not all objects have a story
                 #Field('likes',default=0), #Useless field to present the reflection from personas.
-                Field('value', requires=[IS_EMPTY_OR(IS_DECIMAL_IN_RANGE(0,1e100)), #Optional as not all objects have a known value
+                Field('value', type='float', requires=[IS_EMPTY_OR(IS_DECIMAL_IN_RANGE(0,1e100)), #Optional as not all objects have a known value
                                         IS_EMPTY_OR(IS_EXPR('(len(str(value).split(".")) != 2) | ((len(str(value).split(".")) == 2) and (len(str(value).split(".")[1]) == 2))', error_message='Must be in valid currency format e.g. (£)1 or (£)1.00 (2 decimal places)'))])
                 )
 
