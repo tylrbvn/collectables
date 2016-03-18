@@ -34,34 +34,45 @@
   </div>
 </div>
 
-<h3>Your objects:</h3>
-{{if len(yourObjects) > 0:}}
-  <div class="row">
-    {{for objects in yourObjects:}}
-      {{include 'sub_views/object_preview.html'}}
-    {{pass}}
-  </div>
-{{else:}}
-  <div class="alert alert-danger" role="alert">
-    <strong>You have not offered any objects in this trade.</strong>
-  </div>
-{{pass}}
+<div class="row">
+    <div class="col-md-4 col-md-offset-1">
+        <h3>Your objects:</h3>
+        {{if len(yourObjects) > 0:}}
+            {{for objects in yourObjects:}}
+              {{include 'sub_views/object_preview_slim.html'}}
+            {{pass}}
+        {{else:}}
+          <div class="alert alert-danger" role="alert">
+            <strong>You have not offered any objects in this trade.</strong>
+          </div>
+        {{pass}}
+    </div>
+    <div class="col-md-2 text-center">
+        <span style="font-size:4em; text-align: center;" class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>
+    </div>
+    <div class="col-md-4">
 
-<center>
-  <div class="row">
-      <span style="font-size:5em" class="glyphicon glyphicon-sort" aria-hidden="true"></span>
-  </div>
-</center>
+        <h3>{{=partner.username}}'s objects:</h3>
+        {{if len(theirObjects) > 0:}}
+            {{for objects in theirObjects:}}
+              {{include 'sub_views/object_preview_slim.html'}}
+            {{pass}}
+    </div>
+</div>
 
-<h3>{{=partner.username}}'s objects:</h3>
-{{if len(theirObjects) > 0:}}
-  <div class="row">
-    {{for objects in theirObjects:}}
-      {{include 'sub_views/object_preview.html'}}
+<div class="row text-right">
+    <div class = "col-md-offset-4 col-md-1">
+        <span style="font-size:2em; " class="glyphicon glyphicon-plus"></span>
+    </div>
+    <div class = "col-md-offset-5 col-md-1">
+        <span style="font-size:2em;" class="glyphicon glyphicon-plus"></span>
+    </div>
+</div>
+
+<div class="row">
+    {{else:}}
+          <div class="alert alert-danger" role="alert">
+            <strong>{{=partner.username}} has not offered any objects in this trade.</strong>
+          </div>
     {{pass}}
-  </div>
-{{else:}}
-  <div class="alert alert-danger" role="alert">
-    <strong>{{=partner.username}} has not offered any objects in this trade.</strong>
-  </div>
-{{pass}}
+</div>
