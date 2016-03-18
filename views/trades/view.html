@@ -73,13 +73,48 @@
             <span class=" glyphicon glyphicon-plus" aria-hidden="true"></span></a>
     </div>
 </div>
-        {{pass}}
-        {{pass}}
 
+<div class="row">
+    <div class = "col-md-offset-3 col-md-2">
+    {{if (trade.status == "draft"):}}
+        <a class="btn btn-success btn-sm btn-block" href="">
+            <span class = "glyphicon glyphicon-ok" aria-hidden="true"></span> Send Trade Request!
+        </a>
+    {{pass}}
+    {{if (trade.status == "active"):}}
+        <a class="btn btn-success btn-sm btn-block" href="">
+            <span class = "glyphicon glyphicon-ok" aria-hidden="true"></span> Accept Trade!
+        </a>
+    {{pass}}
+        <!--
+        change this button to 'modify trade' if that has occurred
+        -->
+    </div>
+
+
+    <div class = "col-md-2 col-md-offset-2">
+    {{if (trade.status == "active"):}}
+        <a class="btn btn-danger btn-sm btn-block" href="">
+            <span class = "glyphicon glyphicon-remove" aria-hidden="true"></span> Reject
+        </a>
+    {{elif (trade.status == "draft"):}}
+        <a class="btn btn-warning btn-sm btn-block" href="">
+             Cancel
+        </a>
+    {{pass}}
+    </div>
+
+</div>
+{{pass}}
+{{pass}}
 <div class="row">
     {{if len(theirObjects) <= 0:}}
           <div class="alert alert-danger" role="alert">
             <strong>{{=partner.username}} has not offered any objects in this trade.</strong>
+          </div>
+    {{elif len(yourObjects) <= 0:}}
+          <div class="alert alert-danger" role="alert">
+            <strong>You have not offered any objects in this trade!</strong>
           </div>
     {{pass}}
 </div>
