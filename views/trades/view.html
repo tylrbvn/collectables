@@ -47,8 +47,8 @@
           </div>
         {{pass}}
     </div>
-    <div class="col-md-2 text-center">
-        <span style="font-size:4em; text-align: center;" class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>
+    <div class="col-md-2">
+        <span style="font-size:4em;" class="glyphicon glyphicon-resize-horizontal center" aria-hidden="true"></span>
     </div>
     <div class="col-md-4">
 
@@ -57,20 +57,27 @@
             {{for objects in theirObjects:}}
               {{include 'sub_views/object_preview_slim.html'}}
             {{pass}}
+        {{pass}}
     </div>
 </div>
 
+        {{if trade.status == 'active' or trade.status == 'draft': }}
+        {{if (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed) or (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing):}}
 <div class="row text-right">
     <div class = "col-md-offset-4 col-md-1">
-        <span style="font-size:2em; " class="glyphicon glyphicon-plus"></span>
+        <a class="btn btn-primary btn-sm" href={{=URL('trades', 'offer', args=[trade.id])}}>
+            <span class=" glyphicon glyphicon-plus" aria-hidden="true"></span></a>
     </div>
     <div class = "col-md-offset-5 col-md-1">
-        <span style="font-size:2em;" class="glyphicon glyphicon-plus"></span>
+        <a class="btn btn-primary btn-sm" href={{=URL('trades', 'ask', args=[trade.id])}}>
+            <span class=" glyphicon glyphicon-plus" aria-hidden="true"></span></a>
     </div>
 </div>
+        {{pass}}
+        {{pass}}
 
 <div class="row">
-    {{else:}}
+    {{if len(theirObjects) <= 0:}}
           <div class="alert alert-danger" role="alert">
             <strong>{{=partner.username}} has not offered any objects in this trade.</strong>
           </div>
