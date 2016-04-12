@@ -20,7 +20,7 @@ def add():
         if (record.user_id == auth.user.id):
             #Form that displays list of object names but returns object ID
             form = FORM(DIV(LABEL('Select an object:', _for='objects', _class="control-label col-sm-3"),
-                        DIV(SELECT(_name='objects', *[OPTION(objects[i].name, _value=str(objects[i].id)) for i in range(len(objects))],
+                        DIV(SELECT(_id='objects',_name='objects', *[OPTION(objects[i].name, _value=str(objects[i].id)) for i in range(len(objects))],
                         _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
                         DIV(DIV(INPUT(_class = "btn btn-primary", _value='Add to collection', _type="submit"),
                         A('Cancel', _href=URL('collection', 'view', args=record.id), _class = "btn btn-default"),
