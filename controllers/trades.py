@@ -203,7 +203,29 @@ def ask():
 
 @auth.requires_login()
 def update():
-
+    #Retrieve trade record using ID
+    trade = db.trades(request.args(0))
+    #Check trade exists
+    if trade:
+        if trade.status == 'active':
+            if trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing:
+                trade.update_record(awaiting='proposed')
+                session.flash = "Trade successfully amended!"
+            elif trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed:
+                trade.update_record(awaiting='proposing')
+                session.flash = "Trade successfully amended!"
+        elif trade.status == 'draft':
+            if trade.UserProposing == auth.user.id:
+                count = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.offered == True)).count()
+                if count > 0:
+                    trade.update_record(status='active', awaiting='proposed')
+                    session.flash = "Trade successully initiated!"
+                else:
+                    session.flash = "Error: You must offer at least one item"
+                    redirect(URL('trades', 'offer', args=[trade.id]))
+    else:
+        session.flash = 'Error: You do not have permission to do this'
+    redirect(URL('trades', 'view', args=[trade.id]))
     return dict()
 
 @auth.requires_login()

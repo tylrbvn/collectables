@@ -77,15 +77,15 @@
 <div class="row top-buffer">
     <div class = "col-md-offset-3 col-md-2">
     {{if (trade.status == "draft"):}}
-        <a class="btn btn-success btn-sm btn-block" href="">
+        <a class="btn btn-success btn-sm btn-block" href={{=URL('trades', 'update', args=[trade.id])}}>
             <span class = "glyphicon glyphicon-ok" aria-hidden="true"></span> Send Trade Request!
         </a>
     {{elif (trade.status == "active"):}}
-        <a class="btn btn-success btn-sm btn-block" href="">
+        <a class="btn btn-success btn-sm btn-block" href={{=URL('trades', 'update', args=[trade.id])}}>
             <span class = "glyphicon glyphicon-ok" aria-hidden="true"></span> Accept Trade!
         </a>
     {{elif (trade.status == "modified"):}}
-        <a class="btn btn-primary btn-sm btn-block" href="">
+        <a class="btn btn-primary btn-sm btn-block" href={{=URL('trades', 'update', args=[trade.id])}}>
             <span class = "glyphicon glyphicon-ok" aria-hidden="true"></span> Send Modified Proposal!
         </a>
     {{pass}}
