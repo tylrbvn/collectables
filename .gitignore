@@ -6,3 +6,4 @@ sessions
 .idea/collectables.iml
 *.xml
 .idea/.name
+controllers/trades2.py

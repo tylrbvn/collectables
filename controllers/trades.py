@@ -100,7 +100,7 @@ def offer():
             #TODO: Remove objects already being offered
             objects = db((db.have_lists.user_id == auth.user.id) & (db.have_lists.object_id == db.objects.id)).select()
             form = FORM(DIV(LABEL('Select object to offer:', _for='objects', _class="control-label col-sm-3"),
-                        DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
+                        DIV(SELECT(_id='objects',_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
                         _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
                         DIV(DIV(INPUT(_class = "btn btn-default", _value='Add to offer', _type="submit"),
                         A('Done', _href=URL('trades', 'view', args=trade.id), _class = "btn btn-primary"),
@@ -152,7 +152,7 @@ def ask():
             if trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing:
                 objects = db((db.have_lists.user_id == trade.UserProposed) & (db.have_lists.object_id == db.objects.id)).select()
                 form = FORM(DIV(LABEL('Select object to request:', _for='objects', _class="control-label col-sm-3"),
-                            DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
+                            DIV(SELECT(_id='objects',_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
                             _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
                             DIV(DIV(INPUT(_class = "btn btn-default", _value='Add to request', _type="submit"),
                             A('Done', _href=URL('trades', 'view', args=trade.id), _class = "btn btn-primary"),
@@ -175,7 +175,7 @@ def ask():
             elif trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed:
                 objects = db((db.have_lists.user_id == trade.UserProposing) & (db.have_lists.object_id == db.objects.id)).select()
                 form = FORM(DIV(LABEL('Select object to request:', _for='objects', _class="control-label col-sm-3"),
-                            DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
+                            DIV(SELECT(_id='objects',_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
                             _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
                             DIV(DIV(INPUT(_class = "btn btn-default", _value='Add to request', _type="submit"),
                             A('Done', _href=URL('trades', 'view', args=trade.id), _class = "btn btn-primary"),
@@ -200,6 +200,44 @@ def ask():
     else:
         response.flash = 'Error: This trade does not exist!'
     return dict()
+
+@auth.requires_login()
+def new():
+    users = db(db.auth_user.id != auth.user.id).select()
+    #my_objects = db((db.have_lists.user_id == auth.user.id) & (db.have_lists.object_id == db.objects.id)).select()
+    #their_objects = db((db.have_lists.user_id == """their ID""") & (db.have_lists.object_id == db.objects.id)).select()
+    form = FORM(
+                DIV(LABEL('User:', _for='user', _class="control-label col-sm-3"),
+                    DIV(SELECT(_id='user',_name='user', *[OPTION(users[i].username, _value=str(users[i].id)) for i in range(len(users))],
+                        _class = "form-control select"), _class="col-sm-4"),
+                        _class = "form-group"),
+                DIV(DIV(INPUT(_class = "btn btn-primary", _value='Next step', _type="submit"),
+                A('Cancel', _href=URL('default', 'index'), _class = "btn btn-danger"),
+                _class="col-sm-9 col-sm-offset-3"),
+                _class="form-group"),
+                _class="form-horizontal")
+                #TODO: Either use or remove this
+                #DIV(LABEL('Objects to offer:', _for='offer', _class="control-label col-sm-3"),
+                #    DIV(SELECT(_name='offer', *[OPTION(my_objects[i].objects.name, _value=str(my_objects[i].objects.id)) for i in range(len(my_objects))],
+                #        _class = "form-control select"), _class="col-sm-4"),
+                #        _class = "form-group"),
+                #DIV(LABEL('Objects to request:', _for='request', _class="control-label col-sm-3"),
+                #    DIV(SELECT(_name='request', *[OPTION(db((db.have_lists.user_id == request.vars.user) & (db.have_lists.object_id == db.objects.id)).select()[i].objects.name,
+                #               _value=str(db((db.have_lists.user_id == request.vars.user) & (db.have_lists.object_id == db.objects.id)).select()[i].objects.id))
+                #               for i in range(len(db((db.have_lists.user_id == request.vars.user) & (db.have_lists.object_id == db.objects.id)).select()))],
+                #        _class = "form-control select"), _class="col-sm-4"),
+                #        _class = "form-group")
+    #Insert todays date of creation
+    if form.accepts(request, session):
+        #Ensure object not already in collection
+        trade_id = db.trades.insert(UserProposing = auth.user.id,
+        UserProposed = request.vars.user
+        )
+        db.commit
+        session.flash = "You are now making a trade, offer some objects!"
+        #Progress to offer own items
+        redirect(URL('trades', 'offer', args=[trade_id]))
+    return dict(form = form)
 
 @auth.requires_login()
 def update():
