@@ -4,21 +4,21 @@
 ######################################################################################################################
 -->
 <div class="col-sm-6 col-md-3">
-  <div class="thumbnail">
-    <a href="{{=URL('object','view', args=[objects.objects.id])}}">
-      <h4 style="text-align:center">{{=objects.objects.name}}</h4>
-    </a>
-    <div class="caption">
-      {{types = objects.objects.type.split('|')}}
-      {{if len(types)>0:}}
-      <div class="types">
-        <p><strong>Type(s):</strong>
-        {{for t in range(len(types)):}}{{if len(types[t])>0:}}{{if t > 1:}}, {{pass}}{{=types[t]}}{{pass}}{{pass}}
-        </p>
-      </div>
-      {{pass}}
-      <p><strong>Owner:</strong> {{=objects.auth_user.username}}</p>
-      {{include 'sub_views/object_preview_controls.html'}}
+    <div class="thumbnail">
+        <a href="{{=URL('object','view', args=[objects.objects.id])}}">
+            <h4 style="text-align:center">{{=objects.objects.name}}</h4>
+        </a>
+        <div class="caption">
+        {{types = objects.objects.type.split('|')}}
+        {{if len(types)>0:}}
+            <div class="types">
+                <p><strong>Type(s):</strong>
+                {{for t in range(len(types)):}}{{if len(types[t])>0:}}{{if t > 1:}}, {{pass}}{{=types[t]}}{{pass}}{{pass}}
+                </p>
+            </div>
+        {{pass}}
+            <p><strong>Owner:</strong> {{=objects.auth_user.username}}</p>
+        {{include 'sub_views/object_preview_controls.html'}}
+        </div>
     </div>
-  </div>
 </div>

@@ -80,10 +80,13 @@
         <a class="btn btn-success btn-sm btn-block" href="">
             <span class = "glyphicon glyphicon-ok" aria-hidden="true"></span> Send Trade Request!
         </a>
-    {{pass}}
-    {{if (trade.status == "active"):}}
+    {{elif (trade.status == "active"):}}
         <a class="btn btn-success btn-sm btn-block" href="">
             <span class = "glyphicon glyphicon-ok" aria-hidden="true"></span> Accept Trade!
+        </a>
+    {{elif (trade.status == "modified"):}}
+        <a class="btn btn-primary btn-sm btn-block" href="">
+            <span class = "glyphicon glyphicon-ok" aria-hidden="true"></span> Send Modified Proposal!
         </a>
     {{pass}}
         <!--

@@ -21,9 +21,9 @@ def index():
 
 @auth.requires_login()
 def view():
-    trade = db.trades(request.args(0))  #We need to find who proposed to trade to determine whose objects are whose
+    trade = db.trades(request.args(0))
     if trade:
-        if trade.UserProposing == auth.user.id or trade.UserProposed == auth.user.id: #If we are involved in the trade
+        if trade.UserProposing == auth.user.id or trade.UserProposed == auth.user.id:
             yourObjects = db((trade.id == db.objects_in_trade.trade_id) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id == auth.user.id) & (db.objects.user_id == db.auth_user.id)).select()
             theirObjects = db((trade.id == db.objects_in_trade.trade_id) & (db.objects_in_trade.object_id == db.objects.id) & (db.objects.user_id != auth.user.id) & (db.objects.user_id == db.auth_user.id)).select()
             if trade.UserProposed==auth.user_id:
@@ -80,11 +80,14 @@ def view():
                 return dict(trade=trade, yourObjects=yourObjects, theirObjects=theirObjects, partner = partner, control='trade')
         else:
             #If the user
-            session.flash = "Error: You do not have permission to view this trade"
+            session.flash = "You don't have permission to view this trade - check that you haven't logged out"
             redirect(URL('trades', 'index'))
     else:
-        session.flash = "Error: Invalid trade ID"
+        session.flash = "Oops! This trade doesn't exist on our system. Sorry about that!"
         redirect(URL('trades', 'index'))
+    # display trade items
+    # provide + button functionality
+    # will have to refresh page every 'press'
 
 @auth.requires_login()
 def offer():
@@ -100,7 +103,7 @@ def offer():
                         DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
                         _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
                         DIV(DIV(INPUT(_class = "btn btn-default", _value='Add to offer', _type="submit"),
-                        A('Next step', _href=URL('trades', 'ask', args=trade.id), _class = "btn btn-primary"),
+                        A('Done', _href=URL('trades', 'view', args=trade.id), _class = "btn btn-primary"),
                         _class="col-sm-9 col-sm-offset-3"),
                         _class="form-group"),
                         _class="form-horizontal")
@@ -152,7 +155,7 @@ def ask():
                             DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
                             _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
                             DIV(DIV(INPUT(_class = "btn btn-default", _value='Add to request', _type="submit"),
-                            A('Send offer', _href=URL('trades', 'update', args=trade.id), _class = "btn btn-primary"),
+                            A('Done', _href=URL('trades', 'view', args=trade.id), _class = "btn btn-primary"),
                             _class="col-sm-9 col-sm-offset-3"),
                             _class="form-group"),
                             _class="form-horizontal")
@@ -175,7 +178,7 @@ def ask():
                             DIV(SELECT(_name='objects', *[OPTION(objects[i].objects.name, _value=str(objects[i].objects.id)) for i in range(len(objects))],
                             _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
                             DIV(DIV(INPUT(_class = "btn btn-default", _value='Add to request', _type="submit"),
-                            A('Send offer', _href=URL('trades', 'update', args=trade.id), _class = "btn btn-primary"),
+                            A('Done', _href=URL('trades', 'view', args=trade.id), _class = "btn btn-primary"),
                             _class="col-sm-9 col-sm-offset-3"),
                             _class="form-group"),
                             _class="form-horizontal")
@@ -199,7 +202,47 @@ def ask():
     return dict()
 
 @auth.requires_login()
+def update():
+
+    return dict()
+@auth.requires_login()
+def reject():
+    #Retrieve trade record using ID
+    trade = db.trades(request.args(0))
+    #Check trade exists
+    if trade:
+        if trade.status == 'active':
+            if (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing) or (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed):
+                trade.update_record(status='rejected')
+                session.flash = "Trade rejected!"
+                redirect(URL('trades', 'index'))
+    else:
+        session.flash = 'Error: You do not have permission to do this'
+    redirect(URL('trades', 'index'))
+    return dict()
+
+@auth.requires_login()
+def remove():
+    trade = db.trades(request.args(1))
+    obj = db.objects(request.args(0))
+    if (trade and obj):
+        if (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing) or (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed):
+            #Delete the link
+            db((db.objects_in_trade.object_id == obj.id) & (db.objects_in_trade.trade_id == trade.id)).delete()
+            session.flash = "'" + obj.name + "' successfully removed"
+            redirect(URL('trades', 'view', args=[trade.id]))
+        else:
+            session.flash = "Error: You don't have permission to remove this"
+            redirect(URL('trades', 'view', args=[trade.id]))
+    else:
+        session.flash = "Error: Invalid trade or object selected"
+        redirect(URL('trades', 'index'))
+    return dict()
+
+@auth.requires_login()
 def new():
+    # source selects target
+    # source redirected to view() and shown empty trade
     users = db(db.auth_user.id != auth.user.id).select()
     #my_objects = db((db.have_lists.user_id == auth.user.id) & (db.have_lists.object_id == db.objects.id)).select()
     #their_objects = db((db.have_lists.user_id == """their ID""") & (db.have_lists.object_id == db.objects.id)).select()
@@ -226,90 +269,12 @@ def new():
                 #        _class = "form-group")
     #Insert todays date of creation
     if form.accepts(request, session):
-        #Ensure object not already in collection
-        trade_id = db.trades.insert(UserProposing = auth.user.id,
-        UserProposed = request.vars.user
-        )
-        db.commit
-        session.flash = "You are now making a trade, offer some objects!"
-        #Progress to offer own items
-        redirect(URL('trades', 'offer', args=[trade_id]))
+    #     #Ensure object not already in
+    #     trade_id = db.trades.insert(UserProposing = auth.user.id,
+    #     UserProposed = request.vars.user
+    #     )
+    #     db.commit
+    #     session.flash = "You are now making a trade, offer some objects!"
+    #     #Progress to offer own items
+        redirect(URL('trades', 'view', args=[trade_id]))
     return dict(form = form)
-
-@auth.requires_login()
-def update():
-    #Retrieve trade record using ID
-    trade = db.trades(request.args(0))
-    #Check trade exists
-    if trade:
-        if trade.status == 'active':
-            if trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing:
-                trade.update_record(awaiting='proposed')
-                session.flash = "Trade successfully amended!"
-            elif trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed:
-                trade.update_record(awaiting='proposing')
-                session.flash = "Trade successfully amended!"
-        elif trade.status == 'draft':
-            if trade.UserProposing == auth.user.id:
-                count = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.offered == True)).count()
-                if count > 0:
-                    trade.update_record(status='active', awaiting='proposed')
-                    session.flash = "Trade successully initiated!"
-                else:
-                    session.flash = "Error: You must offer at least one item"
-                    redirect(URL('trades', 'offer', args=[trade.id]))
-    else:
-        session.flash = 'Error: You do not have permission to do this'
-    redirect(URL('trades', 'view', args=[trade.id]))
-    return dict()
-
-@auth.requires_login()
-def reject():
-    #Retrieve trade record using ID
-    trade = db.trades(request.args(0))
-    #Check trade exists
-    if trade:
-        if trade.status == 'active':
-            if (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing) or (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed):
-                trade.update_record(status='rejected')
-                session.flash = "Trade rejected!"
-    else:
-        session.flash = 'Error: You do not have permission to do this'
-    redirect(URL('trades', 'index'))
-    return dict()
-
-@auth.requires_login()
-def offer_remove():
-    trade = db.trades(request.args(0))
-    obj = db.objects(request.args(1))
-    if (trade and obj):
-        if (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing) or (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed):
-            #Delete the link
-            db((db.objects_in_trade.object_id == obj.id) & (db.objects_in_trade.trade_id == trade.id)).delete()
-            session.flash = "'" + obj.name + "' successfully removed"
-            redirect(URL('trades', 'offer', args=[trade.id]))
-        else:
-            session.flash = "Error: You don't have permission to remove this"
-            redirect(URL('trades', 'view', args=[trade.id]))
-    else:
-        session.flash = "Error: Invalid trade or object selected"
-        redirect(URL('trades', 'index'))
-    return dict()
-
-@auth.requires_login()
-def ask_remove():
-    trade = db.trades(request.args(0))
-    obj = db.objects(request.args(1))
-    if (trade and obj):
-        if (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing) or (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed):
-            #Delete the link
-            db((db.objects_in_trade.object_id == obj.id) & (db.objects_in_trade.trade_id == trade.id)).delete()
-            session.flash = "'" + obj.name + "' successfully removed"
-            redirect(URL('trades', 'ask', args=[trade.id]))
-        else:
-            session.flash = "Error: You don't have permission to remove this"
-            redirect(URL('trades', 'view', args=[trade.id]))
-    else:
-        session.flash = "Error: Invalid trade or object selected"
-        redirect(URL('trades', 'index'))
-    return dict()
