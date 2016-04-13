@@ -29,14 +29,17 @@
     <span class="label label-default">Created by {{if trade.trades.UserProposing == auth.user.id:}}you{{else:}}{{=trade.auth_user.username}}{{pass}} at {{=trade.trades.date.strftime('%H:%M %d.%m.%y')}}</span>
     </br>
     {{if trade.trades.status == 'active':}}
-        <span class="label label-primary">
-          Awaiting
+
           {{if (trade.trades.awaiting == 'proposed' and trade.trades.UserProposed == auth.user.id) or (trade.trades.awaiting == 'proposing' and trade.trades.UserProposing == auth.user.id):}}
-          your response
+      <span class="label label-warning">
+      Waiting on your response
+          </span>
           {{else:}}
-          their response
-          {{pass}}
+      <span class="label label-primary">
+          Waiting on their response
+
         </span>
+          {{pass}}
       {{elif trade.trades.status == 'rejected':}}
         <span class="label label-danger">
           Rejected by
