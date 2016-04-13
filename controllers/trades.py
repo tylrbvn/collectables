@@ -205,6 +205,7 @@ def ask():
 def update():
 
     return dict()
+
 @auth.requires_login()
 def reject():
     #Retrieve trade record using ID
@@ -216,6 +217,19 @@ def reject():
                 trade.update_record(status='rejected')
                 session.flash = "Trade rejected!"
                 redirect(URL('trades', 'index'))
+    else:
+        session.flash = 'Error: You do not have permission to do this'
+    redirect(URL('trades', 'index'))
+    return dict()
+
+@auth.requires_login()
+def cancel_trade():
+    trade = db.trades(request.args(0))
+    if trade:
+        if trade.status == 'draft':
+            if trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing:
+                db(db.trades.id == trade.id).delete()
+                session.flash = "Trade Cancelled"
     else:
         session.flash = 'Error: You do not have permission to do this'
     redirect(URL('trades', 'index'))

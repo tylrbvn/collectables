@@ -97,11 +97,11 @@
 
     <div class = "col-md-2 col-md-offset-2">
     {{if (trade.status == "active"):}}
-        <a class="btn btn-danger btn-sm btn-block" href="">
+        <a class="btn btn-danger btn-sm btn-block" href={{=URL('trades', 'reject', args=[trade.id])}}>
             <span class = "glyphicon glyphicon-remove" aria-hidden="true"></span> Reject
         </a>
     {{elif (trade.status == "draft"):}}
-        <a class="btn btn-warning btn-sm btn-block" href="">
+        <a class="btn btn-warning btn-sm btn-block" href={{=URL('trades', 'cancel_trade', args=[trade.id])}} args>
              Cancel
         </a>
     {{pass}}
