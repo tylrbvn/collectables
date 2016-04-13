@@ -63,7 +63,7 @@
 
         {{if trade.status == 'active' or trade.status == 'draft': }}
         {{if (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed) or (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing):}}
-<div class="row text-right">
+<div class="row text-right top-buffer">
     <div class = "col-md-offset-4 col-md-1">
         <a class="btn btn-primary btn-sm" href={{=URL('trades', 'offer', args=[trade.id])}}>
             <span class=" glyphicon glyphicon-plus" aria-hidden="true"></span></a>
@@ -74,7 +74,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row top-buffer">
     <div class = "col-md-offset-3 col-md-2">
     {{if (trade.status == "draft"):}}
         <a class="btn btn-success btn-sm btn-block" href="">
@@ -95,22 +95,31 @@
     </div>
 
 
-    <div class = "col-md-2 col-md-offset-2">
+
     {{if (trade.status == "active"):}}
+    <div class = "col-md-2 col-md-offset-2">
         <a class="btn btn-danger btn-sm btn-block" href={{=URL('trades', 'reject', args=[trade.id])}}>
             <span class = "glyphicon glyphicon-remove" aria-hidden="true"></span> Reject
         </a>
-    {{elif (trade.status == "draft"):}}
-        <a class="btn btn-warning btn-sm btn-block" href={{=URL('trades', 'cancel_trade', args=[trade.id])}} args>
-             Cancel
-        </a>
-    {{pass}}
     </div>
+    {{elif (trade.status == "draft"):}}
+    <div class = "col-md-2">
+        <a class="btn btn-danger btn-sm btn-block" href={{=URL('trades', 'cancel_trade', args=[trade.id])}} args>
+             Delete Draft
+        </a>
+    </div>
+    <div class = "col-md-2">
+        <a class="btn btn-warning btn-sm btn-block" href={{=URL('trades', 'index')}} args>
+             Back to trades overview
+        </a>
+    </div>
+    {{pass}}
+
 
 </div>
 {{pass}}
 {{pass}}
-<div class="row">
+<div class="row top-buffer">
     {{if len(theirObjects) <= 0:}}
           <div class="alert alert-danger" role="alert">
             <strong>{{=partner.username}} has not offered any objects in this trade.</strong>

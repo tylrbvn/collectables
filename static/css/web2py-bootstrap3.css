@@ -318,3 +318,9 @@ input[type=checkbox], input[type=radio] {
 .btn {
     margin-right: 4px;
 }
+
+.top-buffer { margin-top:20px; }
+
+.top-buffer-half {
+    margin-top: 10px;
+}
