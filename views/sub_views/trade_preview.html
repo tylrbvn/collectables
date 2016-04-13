@@ -14,7 +14,7 @@
       {{pass}}
     </span>
     {{elif trade.trades.status == 'draft':}}
-    <a href="{{=URL('trades','offer', args=[trade.trades.id])}}">
+    <a href="{{=URL('trades','view', args=[trade.trades.id])}}">
         <h4>Trade with {{=trade.auth_user.username}}</h4>
     </a>
     <span class="label label-default">Created at {{=trade.trades.date.strftime('%H:%M %d.%m.%y')}}</span>
