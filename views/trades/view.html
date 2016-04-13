@@ -13,7 +13,7 @@
     <h4><span class="label label-default">Created by {{if trade.UserProposing == auth.user.id:}}you{{else:}}{{=partner.username}}{{pass}} at {{=trade.date.strftime('%H:%M %d.%m.%y')}}</span></h4>
     {{if trade.status == 'active':}}
       {{if (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed) or (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing):}}
-        </br>{{=form}}
+
       {{else:}}
         <h4>
           <span class="label label-primary">Awaiting their response</span>
@@ -39,7 +39,11 @@
         <h3>Your objects:</h3>
         {{if len(yourObjects) > 0:}}
             {{for objects in yourObjects:}}
-              {{include 'sub_views/object_preview_slim.html'}}
+                {{if trade.status != 'rejected':}}
+                    {{include 'sub_views/object_preview_slim.html'}}
+                {{else:}}
+                    {{include 'sub_views/object_preview_slim_no_remove.html'}}
+                {{pass}}
             {{pass}}
         {{else:}}
           <div class="alert alert-danger" role="alert">
@@ -55,8 +59,16 @@
         <h3>{{=partner.username}}'s objects:</h3>
         {{if len(theirObjects) > 0:}}
             {{for objects in theirObjects:}}
-              {{include 'sub_views/object_preview_slim.html'}}
+                {{if trade.status != 'rejected':}}
+                    {{include 'sub_views/object_preview_slim.html'}}
+                {{else:}}
+                    {{include 'sub_views/object_preview_slim_no_remove.html'}}
+                {{pass}}
             {{pass}}
+        {{else:}}
+          <div class="alert alert-danger" role="alert">
+            <strong>{{=partner.username}} has not offered any objects in this trade.</strong>
+          </div>
         {{pass}}
     </div>
 </div>
@@ -104,12 +116,18 @@
     </div>
     {{elif (trade.status == "draft"):}}
     <div class = "col-md-2">
-        <a class="btn btn-danger btn-sm btn-block" href={{=URL('trades', 'cancel_trade', args=[trade.id])}} args>
+        <a class="btn btn-danger btn-sm btn-block" href={{=URL('trades', 'cancel_trade', args=[trade.id])}}>
              Delete Draft
         </a>
     </div>
     <div class = "col-md-2">
-        <a class="btn btn-warning btn-sm btn-block" href={{=URL('trades', 'index')}} args>
+        <a class="btn btn-primary btn-sm btn-block" href={{=URL('trades', 'index')}}>
+             Back to trades overview
+        </a>
+    </div>
+    {{elif (trade.status == 'rejected'):}}
+    <div class = "col-md-2 col-md-offset-4">
+        <a class="btn btn-primary btn-sm btn-block" href={{=URL('trades', 'index')}}>
              Back to trades overview
         </a>
     </div>
@@ -119,14 +137,3 @@
 </div>
 {{pass}}
 {{pass}}
-<div class="row top-buffer">
-    {{if len(theirObjects) <= 0:}}
-          <div class="alert alert-danger" role="alert">
-            <strong>{{=partner.username}} has not offered any objects in this trade.</strong>
-          </div>
-    {{elif len(yourObjects) <= 0:}}
-          <div class="alert alert-danger" role="alert">
-            <strong>You have not offered any objects in this trade!</strong>
-          </div>
-    {{pass}}
-</div>

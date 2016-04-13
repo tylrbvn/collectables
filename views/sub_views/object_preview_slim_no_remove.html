@@ -1,0 +1,22 @@
+<!--
+######################################################################################################################
+## Object preview subview that is used in trade/view for rejected items ##
+######################################################################################################################
+-->
+<div class="thumbnail row">
+    <div class="col-md-8">
+        <a href="{{=URL('object','view', args=[objects.objects.id])}}">
+            <h4 style="text-align:left; vertical-align: middle">{{=objects.objects.name}}</h4>
+        </a>
+        <p>
+            Item value: £{{='%.2f' % objects.objects.value}}
+        </p>
+    </div>
+    <div class="col-md-offset-2 col-md-1">
+        <div class="row">
+            <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
+                <span class="glyphicon glyphicon-option-horizontal center" aria-hidden="true"/>
+            </a>
+        </div>
+    </div>
+</div>

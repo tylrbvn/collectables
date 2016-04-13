@@ -219,10 +219,9 @@ def update():
                 count = db((db.objects_in_trade.trade_id == trade.id) & (db.objects_in_trade.offered == True)).count()
                 if count > 0:
                     trade.update_record(status='active', awaiting='proposed')
-                    session.flash = "Trade successully initiated!"
+                    session.flash = "Trade successfully initiated!"
                 else:
                     session.flash = "Error: You must offer at least one item"
-                    redirect(URL('trades', 'offer', args=[trade.id]))
     else:
         session.flash = 'Error: You do not have permission to do this'
     redirect(URL('trades', 'view', args=[trade.id]))
