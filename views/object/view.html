@@ -60,7 +60,7 @@
         {{else:}}
         <a href={{=URL('object', 'want', args=[object.id])}} class = "btn btn-primary disabled" data-toggle="tooltip" data-placement="bottom" title="This item is not in its owner's have list">
         <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Add to want list</a>
-        <span class="label label-default">This object is <strong>not</strong> in its owners have list</span>
+        <span class="label label-danger">This object is not in its owners have list</span>
         {{pass}}
       {{pass}}
     </div>

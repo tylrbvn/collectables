@@ -110,9 +110,9 @@ def view():
             #If an object from another user's have list
             have_object = db(db.have_lists.object_id == db.objects.id).select()
             if len(have_object) > 0:
-                return dict(object = object, owner = owner)
-            elif len(public) > 0:
                 return dict(object = object, owner = owner, can_want = True)
+            elif len(public) > 0:
+                return dict(object = object, owner = owner)
         else:
             #It is a custom object which are public by default
             return dict(object = object)
