@@ -1,0 +1,37 @@
+<!--
+#########################################################################
+## View of user's collection                                           ##
+#########################################################################
+-->
+{{extend 'layout.html'}}
+<!--Title and page description-->
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1>Browse collections</h1>
+  </div>
+  <div class="panel-body">
+    All public collections are displayed below, select a collection to view its contents.
+  </div>
+</div>
+<!--Check if the user has any private collections and display-->
+{{if len(collections)>0:}}
+  <div class="row">
+    <!--Display preview of collection -->
+    {{for collection in collections:}}
+      <a href={{=URL('collection','view', args=[collection.collections.id])}}>
+        <div class="col-sm-6 col-md-3">
+        <div class="thumbnail" style="text-align:center">
+            <div class="caption">
+              <span style="font-size:4em" class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                <h2>{{=collection.collections.name}}</h2>
+                <h5>by {{=collection.auth_user.username}}</h5>
+                <h4><span class="label label-default">{{=str(collection._extra['COUNT(objects_in_collections.collection_id)'])}} objects</span></h4>
+            </div>
+          </div>
+        </div>
+      </a>
+    {{pass}}
+  </div>
+{{else:}}
+  <p>No collections to display</p>
+{{pass}}
