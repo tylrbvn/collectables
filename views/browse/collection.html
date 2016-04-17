@@ -10,7 +10,7 @@
     <h1>Browse collections</h1>
   </div>
   <div class="panel-body">
-    All public collections are displayed below, select a collection to view its contents.
+    All public collections containing at least one object are displayed below, select a collection to view its contents.
   </div>
 </div>
 <!--Check if the user has any private collections and display-->
@@ -32,6 +32,9 @@
       </a>
     {{pass}}
   </div>
-{{else:}}
-  <p>No collections to display</p>
-{{pass}}
+  {{else:}}
+    <!--Display prompt if no results-->
+    <div class="alert alert-danger" role="alert">
+      No collections to display right now!
+    </div>
+  {{pass}}
