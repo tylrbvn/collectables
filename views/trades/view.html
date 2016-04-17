@@ -109,9 +109,14 @@
 
 
     {{if (trade.status == "active"):}}
-    <div class = "col-md-2 col-md-offset-2">
+    <div class = "col-md-2">
         <a class="btn btn-danger btn-sm btn-block" href={{=URL('trades', 'reject', args=[trade.id])}}>
             <span class = "glyphicon glyphicon-remove" aria-hidden="true"></span> Reject
+        </a>
+    </div>
+    <div class = "col-md-2">
+        <a class="btn btn-primary btn-sm btn-block" href={{=URL('trades', 'index')}}>
+             Back to trades overview
         </a>
     </div>
     {{elif (trade.status == "draft"):}}
