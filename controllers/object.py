@@ -108,7 +108,7 @@ def view():
             #If an object from another user's public collection
             public = db((db.objects_in_collections.object_id == object.id) & (db.objects_in_collections.collection_id == db.collections.id) & (db.collections.privacy == 'Public')).select()
             #If an object from another user's have list
-            have_object = db(db.have_lists.object_id == db.objects.id).select()
+            have_object = db(db.have_lists.object_id == object.id).select()
             if len(have_object) > 0:
                 return dict(object = object, owner = owner, can_want = True)
             elif len(public) > 0:
