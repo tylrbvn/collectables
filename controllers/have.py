@@ -7,8 +7,8 @@ def add():
     form = FORM(DIV(LABEL('Select an object:', _for='objects', _class="control-label col-sm-3"),
                 DIV(SELECT(_id='objects',_name='objects', *[OPTION(objects[i].name, _value=str(objects[i].id)) for i in range(len(objects))],
                 _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
-                DIV(DIV(INPUT(_class = "btn btn-primary", _value='Add to list', _type="submit"),
-                A('Cancel', _href=URL('have', 'view', args=[auth.user.id]), _class = "btn btn-default"),
+                DIV(DIV(INPUT(_class = "btn btn-primary", _value='Add to have list', _type="submit"),
+                A('Back to have list', _href=URL('have', 'view', args=[auth.user.id]), _class = "btn btn-default"),
                 _class="col-sm-9 col-sm-offset-3"),
                 _class="form-group"),
                 _class="form-horizontal")

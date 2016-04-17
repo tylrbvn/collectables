@@ -23,7 +23,7 @@ def add():
                         DIV(SELECT(_id='objects',_name='objects', *[OPTION(objects[i].name, _value=str(objects[i].id)) for i in range(len(objects))],
                         _class = "form-control select"), _class="col-sm-4"), _class = "form-group"),
                         DIV(DIV(INPUT(_class = "btn btn-primary", _value='Add to collection', _type="submit"),
-                        A('Cancel', _href=URL('collection', 'view', args=record.id), _class = "btn btn-default"),
+                        A('Back to ' + record.name, _href=URL('collection', 'view', args=record.id), _class = "btn btn-default"),
                         _class="col-sm-9 col-sm-offset-3"),
                         _class="form-group"),
                         _class="form-horizontal")
@@ -65,7 +65,8 @@ def new():
     db.collections.user_id.readable = db.collections.user_id.writable = False
     form = SQLFORM(db.collections)
     if form.accepts(request.vars, session):
-        response.flash = 'New collection successfully created.'
+        session.flash = 'New collection successfully created.'
+        redirect(URL('collection', 'index'))
     elif form.errors:
         response.flash = 'One or more of the entries is incorrect:'
     return dict(form = form)
