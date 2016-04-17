@@ -26,9 +26,21 @@ if auth.is_logged_in():
             (T('Collection'), False, URL('collection', 'new')),
             (T('Trade'), False, URL('trades', 'new'))
             ]),
+        (T('Browse'), False, None, [
+            (T('Public collections'), False, URL('browse', 'collection')),
+            (T('Have lists'), False, URL('browse', 'have')),
+            (T('Want lists'), False, URL('browse', 'want'))
+            ]),
         (T('Search'), False, URL('collection', 'search'), [])
     ]
-
+else:
+    response.menu = [
+        (T('Browse'), False, None, [
+            (T('Public collections'), False, URL('browse', 'collection')),
+            (T('Have lists'), False, URL('browse', 'have')),
+            (T('Want lists'), False, URL('browse', 'want'))
+            ])
+    ]
 if "auth" in locals(): auth.wikimenu()
 
 #########################################################################
