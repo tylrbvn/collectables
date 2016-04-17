@@ -54,7 +54,8 @@ def edit():
         if ((record.user_id == auth.user.id)):
             form=SQLFORM(db.collections, record, deletable=True)
             if form.accepts(request,session):
-                response.flash = 'Collection has been successfully updated.'
+                session.flash = 'Collection has been successfully updated.'
+                redirect(URL('collection', 'index'))
             elif form.errors:
                 response.flash = 'One or more of the entries is incorrect:'
             return dict(form=form)
