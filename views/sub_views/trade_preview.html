@@ -32,11 +32,11 @@
 
     {{if (trade.trades.awaiting == 'proposed' and trade.trades.UserProposed == auth.user.id) or (trade.trades.awaiting == 'proposing' and trade.trades.UserProposing == auth.user.id):}}
         <span class="label label-warning">
-      Waiting on your response
+      Waiting for your response!
           </span>
     {{else:}}
         <span class="label label-primary">
-          Waiting on their response
+          Waiting for their response
 
         </span>
     {{pass}}
