@@ -38,8 +38,10 @@
         <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
         <a class="btn btn-danger btn-sm", role="button", href={{=URL('want','remove', args=[objects.objects.id])}}>
         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove </a>
+        {{if objects.objects.user_id != None:}}
         <a class="btn btn-primary btn-sm", role="button", href={{=URL('trades', 'new', args=[objects.objects.id])}}>
         <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Trade for this</a>
+        {{pass}}
       </div>
     {{else:}}
       <!--Else just give control to view full info-->
