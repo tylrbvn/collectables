@@ -277,6 +277,8 @@ def remove():
 @auth.requires_login()
 def new():
     target_object_id = request.args(0)
+    if not target_object_id:
+        redirect(URL('want', 'view', args=[auth._get_user_id()]))
     target_objects = db(db.objects.id == target_object_id).select()
     target_object_owner_id = target_objects[0].user_id
 
