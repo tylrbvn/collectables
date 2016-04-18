@@ -39,7 +39,7 @@
         <h3>Your objects:</h3>
         {{if len(yourObjects) > 0:}}
             {{for objects in yourObjects:}}
-                {{if trade.status != 'rejected':}}
+                {{if (trade.status != 'rejected') & (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed) or (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing):}}
                     {{include 'sub_views/object_preview_slim.html'}}
                 {{else:}}
                     {{include 'sub_views/object_preview_slim_no_remove.html'}}
@@ -59,7 +59,7 @@
         <h3>{{=partner.username}}'s objects:</h3>
         {{if len(theirObjects) > 0:}}
             {{for objects in theirObjects:}}
-                {{if trade.status != 'rejected':}}
+                {{if (trade.status != 'rejected') & (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed) or (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing):}}
                     {{include 'sub_views/object_preview_slim.html'}}
                 {{else:}}
                     {{include 'sub_views/object_preview_slim_no_remove.html'}}
