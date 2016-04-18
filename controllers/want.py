@@ -42,7 +42,7 @@ def view():
     user = db.auth_user(request.args(0))
     if (user):
         #Get list of objects in users want list
-        objects = db((db.want_lists.user_id == user.id) & (db.want_lists.object_id == db.objects.id) & (db.objects.user_id == db.auth_user.id)).select()
+        objects = db((db.want_lists.user_id == user.id) & (db.want_lists.object_id == db.objects.id)).select()
         if auth.is_logged_in():
             if (user.id == auth.user.id):
                 #User logged in viewing their own list

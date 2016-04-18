@@ -37,7 +37,33 @@
     <!--Display previews of list contents-->
     <div class="row">
       {{for objects in objects:}}
-        {{include 'sub_views/object_preview.html'}}
+        <div class="col-sm-6 col-md-3">
+            <div class="thumbnail">
+                <a href="{{=URL('object','view', args=[objects.objects.id])}}">
+                    <h4 style="text-align:center">{{=objects.objects.name}}</h4>
+                </a>
+                <div class="caption">
+                {{types = objects.objects.type.split('|')}}
+                {{if len(types)>0:}}
+                    <div class="types">
+                        <p><strong>Type(s):</strong>
+                        {{for t in range(len(types)):}}{{if len(types[t])>0:}}{{if t > 1:}}, {{pass}}{{=types[t]}}{{pass}}{{pass}}
+                        </p>
+                    </div>
+                {{pass}}
+                {{owner_info = db((db.objects.id == objects.objects.id) & (db.objects.user_id == db.auth_user.id)).select(db.auth_user.username)}}
+                <p>
+                  <strong>Owner:</strong>
+                  {{if len(owner_info) > 0:}}
+                     {{=owner_info[0].username}}
+                  {{else:}}
+                    <span class="label label-default">Custom object</span>
+                  {{pass}}
+                </p>
+                {{include 'sub_views/object_preview_controls.html'}}
+                </div>
+            </div>
+        </div>
       {{pass}}
     </div>
   {{else:}}
