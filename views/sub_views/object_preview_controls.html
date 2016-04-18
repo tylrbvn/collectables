@@ -27,7 +27,7 @@
       <!--Else just give control to view full info-->
       <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
       <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
-      <a href={{=URL('object', 'want', args=[objects.objects.id])}}, class = "btn btn-primary btn-sm">
+      <a class = "btn btn-primary btn-sm", role="button", href={{=URL('object', 'want', args=[objects.objects.id])}}>
       <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Add to want list</a>
     {{pass}}
   {{elif control == 'want':}}
