@@ -47,8 +47,22 @@ def add():
 def edit():
     #Retrieve object using ID
     record = db.objects(request.args(0))
+    active_trades_using_object = db((db.trades.id == db.objects_in_trade.trade_id)
+                                    & (db.trades.status == 'active')).select()
+    print(active_trades_using_object)
+    for trade in active_trades_using_object:
+        print(trade)
+        if db((db.objects_in_trade.object_id == record.id)
+                & (db.objects_in_trade.trade_id == trade.trades.id)).select() is not None:
+            session.flash = 'This object cannot be modified as it is currently used in an active trade'
+            redirect(URL('object', 'view', args=[record.id]))
+            break
+
     db.objects.id.readable = db.objects.id.writable = False
     db.objects.user_id.readable = db.objects.user_id.writable = False
+
+
+
     #Check if there exists an object with ID
     if(record):
         #Check user owns that object
