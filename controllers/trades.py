@@ -276,28 +276,16 @@ def remove():
 
 @auth.requires_login()
 def new():
-    # source selects target
-    # source redirected to view() and shown empty trade
-    users = db(db.auth_user.id != auth.user.id).select()
-    form = FORM(
-        DIV(LABEL('User:', _for='user', _class="control-label col-sm-3"),
-            DIV(SELECT(_name='user', *[OPTION(users[i].username, _value=str(users[i].id)) for i in range(len(users))],
-                       _class = "form-control select"), _class="col-sm-4"),
-            _class = "form-group"),
-        DIV(DIV(INPUT(_class = "btn btn-primary", _value='Next step', _type="submit"),
-                A('Cancel', _href=URL('default', 'index'), _class = "btn btn-danger"),
-                _class="col-sm-9 col-sm-offset-3"),
-            _class="form-group"),
-        _class="form-horizontal")
+    target_object_id = request.args(0)
+    target_objects = db(db.objects.id == target_object_id).select()
+    target_object_owner_id = target_objects[0].user_id
 
-    #Insert todays date of creation
-    if form.accepts(request, session):
-        #     #Ensure object not already in
-        trade_id = db.trades.insert(UserProposing = auth.user.id,
-                                    UserProposed = request.vars.user
-                                    )
-        db.commit
-        #     session.flash = "You are now making a trade, offer some objects!"
-        #     #Progress to offer own items
-        redirect(URL('trades', 'view', args=[trade_id]))
-    return dict(form = form)
+    trade_id = db.trades.insert(UserProposing = auth.user.id,
+                                UserProposed = target_object_owner_id)
+    db.commit
+    db.objects_in_trade.insert(object_id = target_object_id,
+                    trade_id = trade_id,
+                    asked = True)
+    db.commit
+    redirect(URL('trades', 'view', args=[trade_id]))
+    return dict();

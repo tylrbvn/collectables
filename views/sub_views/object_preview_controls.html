@@ -27,7 +27,7 @@
       <!--Else just give control to view full info-->
       <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
       <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
-      <a href={{=URL('object', 'want', args=[objects.objects.id])}} class = "btn btn-primary btn-sm">
+      <a href={{=URL('object', 'want', args=[objects.objects.id])}}, class = "btn btn-primary btn-sm">
       <span class="glyphicon glyphicon-copy" aria-hidden="true"></span> Add to want list</a>
     {{pass}}
   {{elif control == 'want':}}
@@ -37,7 +37,9 @@
         <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
         <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
         <a class="btn btn-danger btn-sm", role="button", href={{=URL('want','remove', args=[objects.objects.id])}}>
-        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove from list</a>
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove </a>
+        <a class="btn btn-primary btn-sm", role="button", href={{=URL('trades', 'new', args=[objects.objects.id])}}>
+        <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Trade for this</a>
       </div>
     {{else:}}
       <!--Else just give control to view full info-->
