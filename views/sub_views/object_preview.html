@@ -5,8 +5,12 @@
 -->
 <div class="col-sm-6 col-md-3">
     <div class="thumbnail">
-        <a href="{{=URL('object','view', args=[objects.objects.id])}}">
-            <h4 style="text-align:center">{{=objects.objects.name}}</h4>
+        {{if control == 'search':}}
+          <a href="{{=URL('object','view', args=[objects.objects.id])}}", target="_blank">
+        {{else:}}
+          <a href="{{=URL('object','view', args=[objects.objects.id])}}">
+        {{pass}}
+        <h4 style="text-align:center">{{=objects.objects.name}}</h4>
         </a>
         <div class="caption">
         {{types = objects.objects.type.split('|')}}
