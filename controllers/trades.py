@@ -319,7 +319,27 @@ def unask():
 def new():
     target_object_id = request.args(0)
     if not target_object_id:
-        redirect(URL('want', 'view', args=[auth._get_user_id()]))
+        users = db(db.auth_user.id != auth.user.id).select()
+        form = FORM(
+                    DIV(LABEL('User:', _for='user', _class="control-label col-sm-3"),
+                        DIV(SELECT(_name='user', *[OPTION(users[i].username, _value=str(users[i].id)) for i in range(len(users))],
+                            _class = "form-control select"), _class="col-sm-4"),
+                            _class = "form-group"),
+                    DIV(DIV(INPUT(_class = "btn btn-primary", _value='Next step', _type="submit"),
+                    A('Cancel', _href=URL('default', 'index'), _class = "btn btn-danger"),
+                    _class="col-sm-9 col-sm-offset-3"),
+                    _class="form-group"),
+                    _class="form-horizontal")
+        if form.accepts(request, session):
+            trade_id = db.trades.insert(UserProposing = auth.user.id,
+            UserProposed = request.vars.user,
+            modified=False
+            )
+            db.commit
+            session.flash = "You are now making a trade, offer some objects!"
+            #Progress to offer own items
+            redirect(URL('trades', 'view', args=[trade_id]))
+        return dict(form = form)
     target_objects = db(db.objects.id == target_object_id).select()
     target_object_owner_id = target_objects[0].user_id
 
@@ -332,4 +352,4 @@ def new():
                     asked = True)
     db.commit
     redirect(URL('trades', 'view', args=[trade_id]))
-    return dict();
+    return dict()

@@ -16,7 +16,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-7">
             <ul class="nav nav-tabs">
                 <li class="nav active"><a href="#A" data-toggle="tab">Active trades</a></li>
                 <li class="nav"><a href="#B" data-toggle="tab">Accepted trades</a></li>
@@ -24,9 +24,13 @@
                 <li class="nav"><a href="#D" data-toggle="tab">Draft trades</a></li>
             </ul>
         </div>
+        <div class="col-md-2 col-md-offset-1">
+            <a class="btn btn-primary btn-sm", role="button", href={{=URL('trades', 'new', args=[])}}>
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Trade with a specific user</a>
+        </div>
         <div class="col-md-2">
             <a class="btn btn-primary btn-sm", role="button", href={{=URL('want', 'view', args=[auth._get_user_id()])}}>
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create new trade</a>
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Trade for your wanted items</a>
         </div>
     </div>
     <div class="row col-md-12">
