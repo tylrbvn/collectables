@@ -69,9 +69,9 @@
   {{else:}}
     <!--Display prompt if collection empty-->
     <div class="alert alert-danger" role="alert">
-      <strong>This list is empty.</strong>
+      <strong>Your want list is empty</strong> so you have no objects to start trading for!
       {{if ('removal' in globals()) and auth.is_logged_in():}}
-      <a href="{{=URL('collection','search')}}" class="alert-link">Search for objects to add</a>!
+      <a href="{{=URL('collection','search')}}" class="alert-link">Search for objects to add</a> to your want list!
       {{pass}}
     </div>
   {{pass}}
