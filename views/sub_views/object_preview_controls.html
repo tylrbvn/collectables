@@ -53,7 +53,7 @@
     <div class="btn-group" role="group">
       <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
       <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
-      <a class="btn btn-danger btn-sm", role="button", href={{=URL('trades','offer_remove', args=[trade_id, objects.objects.id])}}>
+      <a class="btn btn-danger btn-sm", role="button", href={{=URL('trades','unoffer', args=[objects.objects.id, trade_id])}}>
         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Unoffer</a>
     </div>
   {{elif control == 'ask':}}
@@ -61,7 +61,7 @@
       <div class="btn-group" role="group">
         <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
         <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Full information</a>
-        <a class="btn btn-danger btn-sm", role="button", href={{=URL('trades','ask_remove', args=[trade_id, objects.objects.id])}}>
+        <a class="btn btn-danger btn-sm", role="button", href={{=URL('trades','unask', args=[objects.objects.id, trade_id])}}>
         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Unrequest</a>
       </div>
   {{else:}}

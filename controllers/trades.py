@@ -279,6 +279,42 @@ def remove():
         redirect(URL('trades', 'index'))
     return dict()
 
+def unoffer():
+    trade = db.trades(request.args(1))
+    obj = db.objects(request.args(0))
+    if (trade and obj):
+        if (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing) or (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed):
+            #Delete the link
+            db((db.objects_in_trade.object_id == obj.id) & (db.objects_in_trade.trade_id == trade.id)).delete()
+            session.flash = "'" + obj.name + "' successfully removed"
+            trade.update_record(modified=True)
+            redirect(URL('trades', 'offer', args=[trade.id]))
+        else:
+            session.flash = "Error: You don't have permission to remove this"
+            redirect(URL('trades', 'offer', args=[trade.id]))
+    else:
+        session.flash = "Error: Invalid trade or object selected"
+        redirect(URL('trades', 'index'))
+    return dict()
+
+def unask():
+    trade = db.trades(request.args(1))
+    obj = db.objects(request.args(0))
+    if (trade and obj):
+        if (trade.awaiting == 'proposing' and auth.user.id == trade.UserProposing) or (trade.awaiting == 'proposed' and auth.user.id == trade.UserProposed):
+            #Delete the link
+            db((db.objects_in_trade.object_id == obj.id) & (db.objects_in_trade.trade_id == trade.id)).delete()
+            session.flash = "'" + obj.name + "' successfully removed"
+            trade.update_record(modified=True)
+            redirect(URL('trades', 'ask', args=[trade.id]))
+        else:
+            session.flash = "Error: You don't have permission to remove this"
+            redirect(URL('trades', 'ask', args=[trade.id]))
+    else:
+        session.flash = "Error: Invalid trade or object selected"
+        redirect(URL('trades', 'index'))
+    return dict()
+
 @auth.requires_login()
 def new():
     target_object_id = request.args(0)
