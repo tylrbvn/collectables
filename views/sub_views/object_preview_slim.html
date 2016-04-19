@@ -15,13 +15,11 @@
     <div class="col-md-offset-2 col-md-1">
         <div class="row">
             <a class="btn btn-default btn-sm", role="button", href={{=URL('object','view', args=[objects.objects.id])}}>
-                <span class="glyphicon glyphicon-info-sign center" aria-hidden="true"/>
-            </a>
+                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Info</a>
         </div>
         <div class="row top-buffer-half">
-            <a class="btn btn-danger btn-sm", role="button" href="{{=URL('trades', 'remove', args=[objects.objects.id, trade.id])}}">
-                <span class="glyphicon glyphicon-remove center" aria-hidden="true"/>
-            </a>
+            <a class="btn btn-danger btn-sm", role="button" href={{=URL('trades', 'remove', args=[objects.objects.id, trade.id])}}>
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove</a>
         </div>
     </div>
 </div>
