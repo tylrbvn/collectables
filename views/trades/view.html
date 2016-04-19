@@ -93,13 +93,15 @@
             <span class = "glyphicon glyphicon-ok" aria-hidden="true"></span> Send Trade Request!
         </a>
     {{elif (trade.status == "active"):}}
-        <a class="btn btn-success btn-sm btn-block" href={{=URL('trades', 'update', args=[trade.id])}}>
+        {{if (trade.modified == False):}}
+        <a class="btn btn-success btn-sm btn-block" href={{=URL('trades', 'accept', args=[trade.id])}}>
             <span class = "glyphicon glyphicon-ok" aria-hidden="true"></span> Accept Trade!
         </a>
-    {{elif (trade.status == "modified"):}}
+        {{else:}}
         <a class="btn btn-primary btn-sm btn-block" href={{=URL('trades', 'update', args=[trade.id])}}>
-            <span class = "glyphicon glyphicon-ok" aria-hidden="true"></span> Send Modified Proposal!
+            <span class = "glyphicon glyphicon-refresh" aria-hidden="true"></span> Send Modified Proposal!
         </a>
+        {{pass}}
     {{pass}}
         <!--
         change this button to 'modify trade' if that has occurred
