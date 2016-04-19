@@ -322,7 +322,7 @@ def new():
         users = db(db.auth_user.id != auth.user.id).select()
         form = FORM(
                     DIV(LABEL('User:', _for='user', _class="control-label col-sm-3"),
-                        DIV(SELECT(_name='user', *[OPTION(users[i].username, _value=str(users[i].id)) for i in range(len(users))],
+                        DIV(SELECT(_id='user',_name='user', *[OPTION(users[i].username, _value=str(users[i].id)) for i in range(len(users))],
                             _class = "form-control select"), _class="col-sm-4"),
                             _class = "form-group"),
                     DIV(DIV(INPUT(_class = "btn btn-primary", _value='Next step', _type="submit"),
